@@ -88,7 +88,7 @@
         <!-- Search Bar and Info -->
         <div class="mt-5 sm:mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div class="w-full sm:max-w-sm">
-            <input id="search-input" type="text" placeholder="Search name, status, notes..." class="field text-xs sm:text-sm" />
+            <input id="search-input" type="text" placeholder="Search name, ID, status, notes..." class="field text-xs sm:text-sm" />
           </div>
           <div id="pagination-info" class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-steel">
             Showing 0 - 0 of 0
@@ -97,9 +97,10 @@
 
         <!-- Desktop Table View (md and up) -->
         <div class="mt-4 hidden md:block overflow-x-auto">
-          <table id="rsvp-table" class="w-full min-w-[1000px] border-collapse text-left text-sm">
+          <table id="rsvp-table" class="w-full min-w-[1100px] border-collapse text-left text-sm">
             <thead>
               <tr class="border-b border-dusty/40 text-xs uppercase tracking-wider text-steel">
+                <th class="px-3 py-3">Guest ID / Ref ID</th>
                 <th class="px-3 py-3">Guest name</th>
                 <th class="px-3 py-3">Status</th>
                 <th class="px-3 py-3">Plus-one</th>
@@ -111,7 +112,7 @@
               </tr>
             </thead>
             <tbody id="rsvp-rows">
-              <tr><td class="px-3 py-5 text-slate-500" colspan="8">Loading submissions...</td></tr>
+              <tr><td class="px-3 py-5 text-slate-500" colspan="9">Loading submissions...</td></tr>
             </tbody>
           </table>
         </div>
@@ -187,7 +188,7 @@
       document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
 
       if (!paginatedRows.length) { 
-        desktopTarget.innerHTML = '<tr><td class="px-3 py-5 text-slate-500" colspan="8">No matching RSVP submissions found.</td></tr>'; 
+        desktopTarget.innerHTML = '<tr><td class="px-3 py-5 text-slate-500" colspan="9">No matching RSVP submissions found.</td></tr>'; 
         mobileTarget.innerHTML = '<div class="rounded-2xl border border-dusty/30 bg-white/50 p-4 text-center text-xs text-slate-500">No matching RSVP submissions found.</div>';
         return; 
       }
@@ -195,6 +196,7 @@
       // Render Desktop Rows
       desktopTarget.innerHTML = paginatedRows.map(row => `
         <tr class="border-b border-dusty/20 align-top">
+          <td class="px-3 py-4 font-mono text-xs font-bold text-steel">${escapeHtml(row.guest_id || 'N/A')}</td>
           <td class="px-3 py-4 font-semibold">${escapeHtml(row.full_name || guestNameMap[row.guest_id])}</td>
           <td class="px-3 py-4"><span class="rounded-full ${row.attendance === 'attending' ? 'bg-powder text-navy' : 'bg-slate-100 text-slate-600'} px-3 py-1 text-xs font-bold uppercase tracking-wider">${escapeHtml(row.attendance)}</span></td>
           <td class="px-3 py-4">${row.plus_one_count || 0}</td>
@@ -224,6 +226,7 @@
         <div class="rounded-2xl border border-dusty/30 bg-white/70 p-4 shadow-sm space-y-3">
           <div class="flex items-start justify-between gap-2 border-b border-dusty/20 pb-2">
             <div>
+              <span class="text-[10px] font-mono font-bold text-steel block">Ref ID: ${escapeHtml(row.guest_id || 'N/A')}</span>
               <h3 class="font-semibold text-base">${escapeHtml(row.full_name || guestNameMap[row.guest_id])}</h3>
               <p class="text-[10px] text-slate-500">${row.created_at ? new Date(row.created_at).toLocaleString() : '-'}</p>
             </div>
@@ -306,12 +309,13 @@
     function applyFilter() {
       const query = document.getElementById('search-input').value.toLowerCase().trim();
       filteredRsvps = currentRsvps.filter(row => {
+        const guestId = (row.guest_id || '').toLowerCase();
         const name = (row.full_name || guestNameMap[row.guest_id] || '').toLowerCase();
         const status = (row.attendance || '').toLowerCase();
         const dietary = (row.dietary_notes || '').toLowerCase();
         const wishes = (row.wishes || '').toLowerCase();
         const approved = row.approved ? 'approved' : 'pending';
-        return name.includes(query) || status.includes(query) || dietary.includes(query) || wishes.includes(query) || approved.includes(query);
+        return guestId.includes(query) || name.includes(query) || status.includes(query) || dietary.includes(query) || wishes.includes(query) || approved.includes(query);
       });
       currentPage = 1;
       renderTable();
@@ -319,6 +323,7 @@
 
     function exportRows() { 
       return currentRsvps.map(row => ({ 
+        'Guest ID': row.guest_id || '',
         'Guest Name': row.full_name || guestNameMap[row.guest_id] || '', 
         'Status': row.attendance || '', 
         'Plus-one Count': row.plus_one_count || 0, 
@@ -339,7 +344,7 @@
 
     function exportCsv() { 
       const rows = exportRows(); 
-      const columns = Object.keys(rows[0] || { 'Guest Name': '', Status: '', 'Plus-one Count': '', 'Dietary Restrictions': '', 'Wish/Message': '', Approved: '', 'Submission Date': '' }); 
+      const columns = Object.keys(rows[0] || { 'Guest ID': '', 'Guest Name': '', Status: '', 'Plus-one Count': '', 'Dietary Restrictions': '', 'Wish/Message': '', Approved: '', 'Submission Date': '' }); 
       const csv = [columns.join(','), ...rows.map(row => columns.map(column => `"${String(row[column] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n'); 
       downloadBlob('daniel-hannah-rsvps.csv', csv, 'text/csv'); 
     }
@@ -363,6 +368,7 @@
       doc.text(`Generated on: ${new Date().toLocaleString()} | Total Responses: ${currentRsvps.length}`, 14, 21);
 
       const tableData = currentRsvps.map(row => [
+        row.guest_id || 'N/A',
         row.full_name || guestNameMap[row.guest_id] || '',
         (row.attendance || '').toUpperCase(),
         row.plus_one_count || 0,
@@ -374,20 +380,21 @@
 
       doc.autoTable({
         startY: 25,
-        head: [['Guest Name', 'Status', 'Plus-One', 'Dietary Restrictions', 'Wish / Message', 'Approved', 'Submission Date']],
+        head: [['Guest ID', 'Guest Name', 'Status', 'Plus-One', 'Dietary Restrictions', 'Wish / Message', 'Approved', 'Submission Date']],
         body: tableData,
         theme: 'striped',
         headStyles: { fillColor: [43, 76, 126], textColor: [255, 255, 255], fontStyle: 'bold' },
         alternateRowStyles: { fillColor: [248, 250, 252] },
         styles: { fontSize: 8, cellPadding: 3, overflow: 'linebreak' },
         columnStyles: {
-          0: { cellWidth: 35 },
-          1: { cellWidth: 20 },
-          2: { cellWidth: 15 },
-          3: { cellWidth: 50 },
-          4: { cellWidth: 70 },
-          5: { cellWidth: 20 },
-          6: { cellWidth: 40 }
+          0: { cellWidth: 25 },
+          1: { cellWidth: 35 },
+          2: { cellWidth: 20 },
+          3: { cellWidth: 15 },
+          4: { cellWidth: 45 },
+          5: { cellWidth: 60 },
+          6: { cellWidth: 20 },
+          7: { cellWidth: 35 }
         }
       });
 
@@ -396,7 +403,7 @@
 
     async function loadRsvps() {
       if (!db) { 
-        document.getElementById('rsvp-rows').innerHTML = '<tr><td class="px-3 py-5 text-red-700" colspan="8">Add Supabase URL and anon key in admin.html first.</td></tr>'; 
+        document.getElementById('rsvp-rows').innerHTML = '<tr><td class="px-3 py-5 text-red-700" colspan="9">Add Supabase URL and anon key in admin.html first.</td></tr>'; 
         document.getElementById('mobile-rsvp-list').innerHTML = '<div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-center text-xs text-red-700">Add Supabase URL and anon key in admin.html first.</div>';
         return; 
       }
@@ -408,7 +415,7 @@
       
       if (rsvpError || guestsError) { 
         const errText = `Could not load data. ${escapeHtml(rsvpError?.message || guestsError?.message)}`;
-        document.getElementById('rsvp-rows').innerHTML = `<tr><td class="px-3 py-5 text-red-700" colspan="8">${errText}</td></tr>`; 
+        document.getElementById('rsvp-rows').innerHTML = `<tr><td class="px-3 py-5 text-red-700" colspan="9">${errText}</td></tr>`; 
         document.getElementById('mobile-rsvp-list').innerHTML = `<div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-center text-xs text-red-700">${errText}</div>`;
         return; 
       }
