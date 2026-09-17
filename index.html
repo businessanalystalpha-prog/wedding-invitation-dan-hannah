@@ -34,6 +34,7 @@
       }
     };
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Great+Vibes&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -471,7 +472,7 @@
           <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">A little preview of the story that brought us here.</p>
           <div class="mt-7 aspect-video overflow-hidden rounded-2xl bg-navy shadow-lg">
             <video class="h-full w-full object-cover" controls playsinline preload="metadata" poster="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&amp;fit=crop&amp;w=1200&amp;q=80">
-              <source src="vidssave.com Wedding Video Trailer - Wedding Day In Cinematic Look 720p.mp4" type="video/mp4">
+              <source src="Video/vidssave.com Wedding Video Trailer - Wedding Day In Cinematic Look 720p.mp4" type="video/mp4">
               Your browser does not support video playback.
             </video>
           </div>
@@ -1451,6 +1452,123 @@
         secretClickCount = 0;
       }, 1500);
     });
+
+    // Detect Messenger / Facebook In-App Browser
+    function isMessengerBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1) || (ua.indexOf("Messenger") > -1);
+    }
+
+    // Auto-check as soon as page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      if (isMessengerBrowser()) {
+        const modal = document.getElementById('messenger-redirect-modal');
+        const urlInput = document.getElementById('page-url-input');
+        const qrContainer = document.getElementById('qrcode');
+        const currentUrl = window.location.href;
+
+        // Show Modal Immediately
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          document.body.classList.add('overflow-hidden'); // Prevent scrolling behind
+        }
+
+        // Set URL text
+        if (urlInput) urlInput.value = currentUrl;
+
+        // Render QR Code
+        if (qrContainer && typeof QRCode !== 'undefined') {
+          qrContainer.innerHTML = '';
+          new QRCode(qrContainer, {
+            text: currentUrl,
+            width: 120,
+            height: 120,
+            colorDark: "#0f172a",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        }
+      }
+
+      // Copy Button Action
+      const copyBtn = document.getElementById('copy-url-btn');
+      const copyStatus = document.getElementById('copy-status');
+      
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async () => {
+          const currentUrl = window.location.href;
+          try {
+            await navigator.clipboard.writeText(currentUrl);
+            copyStatus.textContent = '✓ Link copied! Open it in Chrome or Safari.';
+            setTimeout(() => { copyStatus.textContent = ''; }, 4000);
+          } catch (err) {
+            // Fallback copy strategy
+            const input = document.getElementById('page-url-input');
+            if (input) {
+              input.select();
+              document.execCommand('copy');
+              copyStatus.textContent = '✓ Link copied!';
+              setTimeout(() => { copyStatus.textContent = ''; }, 4000);
+            }
+          }
+        });
+      }
+
+      // Allow guest to close modal if they really want to proceed
+      const closeModalBtn = document.getElementById('close-messenger-modal');
+      if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', () => {
+          const modal = document.getElementById('messenger-redirect-modal');
+          if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+          }
+        });
+      }
+    });
   </script>
+
+    <!-- Messenger Browser Warning & Redirect Modal -->
+  <div id="messenger-redirect-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[10000] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl border border-slate-100">
+      
+      <!-- Icon / Header -->
+      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+        ⚠️
+      </div>
+      <h3 class="font-serif text-lg text-slate-800 font-bold mb-1">Open in External Browser</h3>
+      <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+        You have opened this link in the Messenger App. To properly download your <b>RSVP Pass</b>, please open this link in <b>Safari</b>, <b>Chrome</b> or <b>Any Browser<b>.
+      </p>
+
+      <!-- QR Code Container -->
+      <div class="flex justify-center mb-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+        <div id="qrcode"></div>
+      </div>
+
+      <!-- Instructions / Copy Link Input -->
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center gap-2">
+          <input type="text" id="page-url-input" readonly class="w-full text-xs bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-slate-600 outline-none select-all" />
+          <button id="copy-url-btn" type="button" class="bg-slate-800 text-white text-xs px-3 py-2 rounded-lg font-medium hover:bg-slate-700 transition shrink-0">
+            Copy Link
+          </button>
+        </div>
+        <p id="copy-status" class="text-[11px] text-emerald-600 font-semibold h-4"></p>
+      </div>
+
+      <!-- Quick Steps Instruction -->
+      <div class="text-left bg-slate-50 p-3 rounded-lg border border-slate-200 mb-4">
+        <p class="text-[11px] font-bold text-slate-700 mb-1">How to open this link outside Messenger?</p>
+        <ol class="text-[11px] text-slate-600 list-decimal pl-4 space-y-0.5">
+          <li>Click <b>Copy Link</b> at the top.</li>
+          <li>Tap the <b>3 dots (...)</b> in the top-right corner of the Messenger screen.</li>
+          <li>Select <b>"Open in browser"</b>.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
