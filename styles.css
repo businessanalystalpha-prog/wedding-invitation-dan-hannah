@@ -1,0 +1,470 @@
+﻿:root {
+  --navy: #2B4C7E;
+  --dusty: #82A0BC;
+  --powder: #D6E4F0;
+  --steel: #6082B6;
+  --ice: #F8FAFC;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--ice); color: var(--navy); }
+
+.ambient { position: absolute; border-radius: 999px; filter: blur(2px); pointer-events: none; opacity: .52; }
+.glass { background: rgba(255,255,255,.63); border: 1px solid rgba(130,160,188,.42); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 20px 70px rgba(43,76,126,.12); }
+.section-rule { width: 56px; height: 2px; background: var(--dusty); }
+.fade-up { animation: fadeUp .8s ease both; }
+.delay-1 { animation-delay: .12s; } .delay-2 { animation-delay: .24s; } .delay-3 { animation-delay: .36s; }
+.gallery-image { cursor: zoom-in; }
+.floral-sway { transform-origin: bottom center; animation: floralSway 7s ease-in-out infinite; }
+.floral-drift { animation: floralDrift 9s ease-in-out infinite; }
+.floral-glow { animation: floralGlow 5s ease-in-out infinite; }
+
+.curtain-panel {
+  overflow: hidden;
+  transition: transform 1.15s cubic-bezier(.76, 0, .24, 1);
+  background-image: linear-gradient(90deg, rgba(15,32,61,.34), transparent 16%, rgba(255,255,255,.06) 31%, transparent 45%, rgba(8,25,54,.2) 63%, transparent 82%, rgba(255,255,255,.08));
+  box-shadow: inset 0 0 70px rgba(8,25,54,.38), 0 20px 50px rgba(8,25,54,.28);
+}
+.curtain-panel::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent 4%, rgba(214,228,240,.8) 25%, rgba(232,196,123,.72) 50%, rgba(214,228,240,.8) 75%, transparent 96%);
+  box-shadow: 0 0 16px rgba(232,196,123,.28);
+}
+.curtain-left::after { right: 0; }
+.curtain-right::after { left: 0; }
+
+.welcome-ribbon {
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  z-index: 25;
+  width: 4px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, rgba(232,196,123,.25), #f3d798 45%, #fff1c4 50%, #c99745 100%);
+  box-shadow: 0 0 22px rgba(232,196,123,.45);
+  transition: opacity .25s ease, transform .32s ease;
+}
+.welcome-ribbon::before, .welcome-ribbon::after { content: ''; position: absolute; left: 50%; width: 1px; height: 42%; background: rgba(255,255,255,.52); transform: translateX(-50%); }
+.welcome-ribbon::before { top: 0; }
+.welcome-ribbon::after { bottom: 0; }
+
+#welcome-overlay.is-opening .welcome-ribbon { opacity: 0; transform: translateX(-50%) scaleY(.08); }
+#welcome-overlay.is-opening .curtain-left { transform: translateX(-100%); }
+#welcome-overlay.is-opening .curtain-right { transform: translateX(100%); }
+#welcome-overlay.is-opening .welcome-content { opacity: 0; transform: translateY(-12px) scale(.94); transition: opacity .35s ease, transform .35s ease; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes wishesMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.wishes-marquee-track { display: flex; width: max-content; animation: wishesMarquee 42s linear infinite; }
+.wishes-marquee-track:hover, .wishes-marquee-track.is-paused { animation-play-state: paused; }
+.wish-card { width: min(80vw, 21rem); min-height: 10rem; }
+
+@media (prefers-reduced-motion: reduce) { .wishes-marquee-track { animation: none; } }
+@keyframes floralSway { 0%, 100% { transform: rotate(-2deg) translateY(0); } 50% { transform: rotate(2deg) translateY(-7px); } }
+@keyframes floralDrift { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
+@keyframes floralGlow { 0%, 100% { opacity: .18; } 50% { opacity: .32; } }
+@keyframes sparkleDrift { 0%, 100% { opacity: .2; transform: translateY(8px) scale(.7); } 50% { opacity: .95; transform: translateY(-14px) scale(1.25); } }
+
+.welcome-sparkles { position: absolute; inset: 0; z-index: 10; pointer-events: none; overflow: hidden; }
+.welcome-sparkles span { 
+  position: absolute; 
+  width: 50px; 
+  height: 50px; 
+  background: var(--powder); 
+  clip-path: polygon(50% 0%, 65% 35%, 100% 50%, 65% 65%, 50% 100%, 35% 65%, 0% 50%, 35% 35%);
+  box-shadow: 0 0 14px 3px rgba(214,228,240,.8); 
+  animation: sparkleDrift 10s ease-in-out infinite; 
+}
+.welcome-sparkles span:nth-child(1) { left: 18%; top: 24%; animation-delay: -.8s; }
+.welcome-sparkles span:nth-child(2) { left: 31%; top: 68%; width: 30px; height: 30px; animation-delay: -2.1s; }
+.welcome-sparkles span:nth-child(3) { right: 19%; top: 31%; width: 30px; height: 30px; animation-delay: -3.2s; }
+.welcome-sparkles span:nth-child(4) { right: 30%; bottom: 22%; animation-delay: -1.4s; }
+.welcome-sparkles span:nth-child(5) { left: 9%; bottom: 18%; width: 20px; height: 20px; animation-delay: -3.8s; }
+
+.ribbon-seal { position: relative; display: grid; place-items: center; width: 82px; height: 82px; margin: 34px auto -3px; border: 1px solid rgba(232,196,123,.9); border-radius: 50%; background: radial-gradient(circle at 35% 28%, #f5dca3, #b47b32 72%); color: #fff7da; box-shadow: 0 8px 26px rgba(8,25,54,.38), inset 0 0 0 5px rgba(255,255,255,.16); transition: transform .35s ease, opacity .3s ease; }
+.ribbon-seal::before { content: ''; position: absolute; inset: -7px; border: 1px solid rgba(214,228,240,.55); border-radius: 50%; }
+.ribbon-seal-mark { font-family: 'Cormorant Garamond', serif; font-size: 1.65rem; font-weight: 700; }
+#welcome-overlay.is-opening .ribbon-seal { opacity: 0; transform: scale(.25) rotate(-25deg); }
+
+@media (prefers-reduced-motion: reduce) { *, html { animation: none !important; scroll-behavior: auto !important; transition: none !important; } }
+@keyframes floatFloral {
+  0% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-12px) scale(1.03); }
+  100% { transform: translateY(0px) scale(1); }
+}
+.animate-floral { animation: floatFloral 4s ease-in-out infinite; }
+
+.field-label { display: block; margin-bottom: .5rem; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #6082B6; }
+.field { width: 100%; border-radius: .75rem; border: 1px solid rgba(130,160,188,.5); background: rgba(255,255,255,.65); padding: .8rem 1rem; color: #2B4C7E; outline: none; transition: border-color .2s, box-shadow .2s; }
+.field:focus { border-color: #6082B6; box-shadow: 0 0 0 3px rgba(96,130,182,.16); }
+.font-script { font-family: 'Great Vibes', cursive; }
+
+#faq-widget-container { animation: faqWidgetReveal .45s ease both; }
+.faq-launcher { position: relative; isolation: isolate; box-shadow: 0 12px 28px rgba(43,76,126,.24); }
+.faq-launcher::before { content: ''; position: absolute; inset: -5px; z-index: -1; border: 1px solid rgba(214,228,240,.8); border-radius: 9999px; opacity: .7; }
+.faq-chat-window { box-shadow: 0 24px 60px rgba(15,32,61,.24); transform-origin: bottom right; }
+.faq-chat-window:not(.hidden) { animation: faqChatOpen .24s ease both; }
+#chat-messages { scrollbar-width: thin; scrollbar-color: #82A0BC #F8FAFC; }
+@keyframes faqWidgetReveal { from { opacity: 0; transform: translateY(10px) scale(.92); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes faqChatOpen { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* Mobile Responsive Modal Backdrop */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(43, 76, 126, 0.94);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+.modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 50rem;
+  max-height: 85vh;
+  background: rgba(216, 226, 236, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Watermark on Blue Backdrop */
+.bg-watermark-backdrop {
+  position: absolute;
+  bottom: 20px;
+  right: 24px;
+  opacity: 0.25;
+  pointer-events: none;
+  user-select: none;
+  z-index: 5;
+}
+
+/* Watermark Directly on Image */
+.img-watermark-overlay {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  opacity: 0.65;
+  pointer-events: none;
+  user-select: none;
+  z-index: 20;
+}
+
+/* Animated Floating Floral Corner Accents */
+.floral-corner {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  width: 130px;
+  height: auto;
+  object-fit: contain;
+}
+
+.floral-top-left {
+  top: 0px;
+  left: 0px;
+  animation: floatCornerTL 2s ease-in-out infinite alternate;
+}
+
+.floral-bottom-right {
+  bottom: 0px;
+  right: 0px;
+  animation: floatCornerBR 2s ease-in-out infinite alternate;
+}
+
+@keyframes floatCornerTL {
+  0% { transform: translateY(0px) rotate(0deg) scale(1); }
+  100% { transform: translateY(-6px) rotate(3deg) scale(1.03); }
+}
+
+@keyframes floatCornerBR {
+  0% { transform: translateY(0px) scale(1); }
+  100% { transform: translateY(-8px) rotate(-3deg) scale(1.03); }
+}
+
+/* RSVP & General Card Floral Accents */
+.rsvp-container,
+.card-floral-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.rsvp-floral-corner {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  width: 110px;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+.rsvp-floral-top-left {
+  top: -10px;
+  right: -10px;
+  animation: floatRsvpTL 2s ease-in-out infinite alternate;
+}
+
+.rsvp-floral-bottom-right {
+  bottom: -5px;
+  left: -5px;
+  animation: floatRsvpBR 2s ease-in-out infinite alternate;
+}
+
+@keyframes floatRsvpTL {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-4px, -4px) rotate(-4deg); }
+}
+
+@keyframes floatRsvpBR {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(4px, 4px) scale(1.05) rotate(3deg); }
+}
+
+/* Close Button */
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background-color: rgba(225, 233, 240, 0.9);
+  color: #2B4C7E;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+.modal-close-btn:hover {
+  background-color: #2B4C7E;
+  color: #ffffff;
+}
+
+/* Scrollable Body Content Area */
+.modal-body-scroll {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  overflow-y: auto;
+  padding: 2.5rem 1.75rem 2rem 1.75rem;
+  scrollbar-width: thin;
+  scrollbar-color: #82A0BC rgba(255, 255, 255, 0.25);
+}
+.modal-body-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-body-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  margin: 8px 0;
+}
+.modal-body-scroll::-webkit-scrollbar-thumb {
+  background: #82A0BC;
+  border-radius: 10px;
+}
+.modal-body-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6082B6;
+}
+
+@media (max-width: 640px) {
+  .modal-overlay { padding: 0.5rem; }
+  .lightbox-nav-btn { width: 2.25rem !important; height: 2.25rem !important; font-size: 0.875rem !important; }
+  .bg-watermark-backdrop { bottom: 12px; right: 12px; opacity: 0.20; }
+  .img-watermark-overlay { bottom: 8px; right: 12px; opacity: 0.55; }
+  .floral-corner { width: 85px; }
+  .rsvp-floral-corner { width: 70px; }
+  .modal-body-scroll { padding: 2rem 1rem 1.5rem 1rem; }
+}
+
+.section-with-floral {
+  background-color: #fafbfd;
+  background-image: url('Picture/artan.jpg');
+  background-repeat: no-repeat;
+  background-position: top left, bottom right;
+  background-size: 250px;
+}
+
+/* --- DETAILS CARD BACKGROUNDS & TEXT SHADOWS --- */
+.detail-card-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 1. Background para sa CEREMONY Card */
+.detail-ceremony-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('Picture/iowo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* 2. Background para sa RECEPTION Card */
+.detail-reception-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('Picture/artan.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Soft backdrop tint sa ibabaw ng picture para mas mabasa ang sulat */
+.detail-card-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
+/* TEXT SHADOWS para malinaw ang text sa ibabaw ng image */
+.text-shadow-strong {
+  text-shadow: 0px 1px 3px rgba(255, 255, 255, 0.9),
+               0px 0px 8px rgba(255, 255, 255, 0.8),
+               1px 1px 2px rgba(43, 76, 126, 0.3);
+}
+
+.text-shadow-subtle {
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.9),
+               0px 0px 5px rgba(255, 255, 255, 0.7);
+}
+
+/* Siguraduhing relative ang position ng main card/box */
+.card-container {
+    position: relative;
+    overflow: hidden; /* Para hindi lumagpas ang dulo sa rounded corners */
+}
+
+/* Kaliwang curtain */
+.curtain-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;       /* Para pumuno mula taas hanggang ibaba ng box */
+    width: auto;        /* Mapanatili ang proportion */
+    object-fit: cover;  /* O kaya `contain` depende sa laki ng image */
+    z-index: 1;
+}
+
+/* Kanang curtain */
+.curtain-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;       /* Para pumuno mula taas hanggang ibaba ng box */
+    width: auto;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* Base styles para sa dalawang floral image */
+.rsvp-floral-top,
+.rsvp-floral-bottom {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 90px !important; /* Taas ng bulaklak sa kanto */
+  object-fit: contain !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* Bulaklak sa ITAAS */
+.rsvp-floral-top {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 90px !important;
+  object-fit: contain !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+
+  /* ADJUST MO DITO PARA SA ITAAS: */
+  top: 10px !important;    /* Kapag pinalaki ang value (hal. 20px, 30px), BABAAN ito */
+  /* top: -10px !important; */ /* Kapag ginawang negative (hal. -10px, -20px), TAASAN ito */
+}
+
+/* Bulaklak sa IBABA */
+.rsvp-floral-bottom {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 90px !important;
+  object-fit: contain !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+
+  /* ADJUST MO DITO PARA SA IBABA: */
+  bottom: 10px !important;    /* Kapag pinalaki ang value (hal. 20px, 30px), ITATAAS ito */
+  /* bottom: -15px !important; */ /* Kapag ginawang negative (hal. -10px, -20px), IBABABA ito */
+}
+
+/* Continuous floating animation */
+@keyframes floatAnimation {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px); /* Taas ng float (i-adjust kung gusto mong mas mataas) */
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Application ng animation sa parehong bulaklak */
+.rsvp-floral-top {
+  animation: floatAnimation 3.5s ease-in-out infinite;
+}
+
+.rsvp-floral-bottom {
+  /* May kaunting delay (1.5s) para mag-alternate ang galaw nila */
+  animation: floatAnimation 3.5s ease-in-out infinite 1.5s;
+}
+
+/* Container adjustments */
+.rsvp-container {
+  position: relative !important;
+  overflow: hidden !important; /* Para hindi lumampas sa rounded border */
+  padding-top: 5rem !important; /* Espasyo para sa bulaklak sa taas */
+  padding-bottom: 5rem !important; /* Espasyo para sa bulaklak sa baba */
+}
+
+/* Panatilihing nasa ibabaw ng bulaklak ang lahat ng form elements */
+.rsvp-container > * {
+  position: relative;
+  z-index: 10;
+}

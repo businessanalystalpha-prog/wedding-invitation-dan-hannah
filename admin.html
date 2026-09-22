@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2B4C7E">
+  <title>Wedding Admin | Daniel &amp; Hannah</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { navy: '#2B4C7E', dusty: '#82A0BC', powder: '#D6E4F0', steel: '#6082B6', ice: '#F8FAFC' },
+      fontFamily: { display: ['Cormorant Garamond', 'serif'], sans: ['Manrope', 'sans-serif'] }
+    } } };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    :root { --navy: #2B4C7E; --dusty: #82A0BC; --powder: #D6E4F0; --steel: #6082B6; --ice: #F8FAFC; }
+    body { background: var(--ice); color: var(--navy); }
+    .glass { background: rgba(255,255,255,.72); border: 1px solid rgba(130,160,188,.42); backdrop-filter: blur(18px); box-shadow: 0 18px 55px rgba(43,76,126,.1); }
+    .field { width: 100%; border-radius: .75rem; border: 1px solid rgba(130,160,188,.55); background: rgba(255,255,255,.8); padding: .75rem 1rem; color: var(--navy); outline: none; }
+    .field:focus { border-color: var(--steel); box-shadow: 0 0 0 3px rgba(96,130,182,.15); }
+    .field-label { display: block; margin-bottom: .45rem; color: var(--steel); font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+  <!-- Login Modal -->
+  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-navy/90 p-4 sm:p-5">
+    <form id="login-form" class="glass w-full max-w-md rounded-3xl bg-ice p-6 sm:p-9">
+      <p class="text-xs font-bold uppercase tracking-[.24em] text-steel">Private workspace</p>
+      <h1 class="mt-2 sm:mt-3 font-display text-4xl sm:text-5xl font-semibold">Wedding Admin</h1>
+      <p class="mt-3 sm:mt-4 text-xs sm:text-sm leading-6 text-slate-600">Enter the admin passcode to manage the invitation.</p>
+      <label class="mt-6 sm:mt-7 block"><span class="field-label">Passcode</span><input id="admin-password" class="field" type="password" autocomplete="current-password" required autofocus></label>
+      <button class="mt-5 w-full rounded-full bg-navy px-5 py-3 text-xs font-bold uppercase tracking-[.2em] text-white hover:bg-steel active:scale-[0.98] transition-transform" type="submit">Unlock dashboard</button>
+      <p id="login-error" class="mt-4 min-h-5 text-center text-xs sm:text-sm text-red-700" role="alert"></p>
+    </form>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div id="dashboard" class="hidden">
+    <header class="sticky top-0 z-40 border-b border-white/70 bg-white/80 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-8 sm:py-4">
+        <div>
+          <p class="text-[10px] sm:text-xs font-bold uppercase tracking-[.22em] text-steel">Daniel &amp; Hannah</p>
+          <h1 class="font-display text-2xl sm:text-3xl font-semibold">Admin dashboard</h1>
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3">
+          <a href="index.html" class="rounded-full border border-dusty px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-navy">View site</a>
+          <button id="logout" type="button" class="rounded-full bg-navy px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white">Lock</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl space-y-5 sm:space-y-7 px-4 py-6 sm:px-8 sm:py-8">
+      <p id="dashboard-status" class="rounded-2xl border border-dusty/40 bg-powder/45 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm text-navy" role="status">Dashboard unlocked.</p>
+      
+      <!-- Metrics Grid -->
+      <section class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <article class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-5"><p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-steel">Total Invited</p><p id="stat-invited" class="mt-1 sm:mt-2 font-display text-3xl sm:text-4xl font-semibold">--</p></article>
+        <article class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-5"><p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-steel">Total responses</p><p id="stat-total" class="mt-1 sm:mt-2 font-display text-3xl sm:text-4xl font-semibold">--</p></article>
+        <article class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-5"><p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-steel">Attending</p><p id="stat-attending" class="mt-1 sm:mt-2 font-display text-3xl sm:text-4xl font-semibold">--</p></article>
+        <article class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-5"><p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-steel">Declining</p><p id="stat-declining" class="mt-1 sm:mt-2 font-display text-3xl sm:text-4xl font-semibold">--</p></article>
+      </section>
+
+      <!-- Submissions Section -->
+      <section class="glass rounded-2xl sm:rounded-3xl p-4 sm:p-8">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-[10px] sm:text-xs font-bold uppercase tracking-[.2em] text-steel">Guest responses</p>
+            <h2 class="mt-1 sm:mt-2 font-display text-3xl sm:text-4xl font-semibold">Attendees &amp; RSVPs</h2>
+          </div>
+          <!-- Action Buttons -->
+          <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+            <button id="export-xlsx" type="button" class="rounded-full bg-navy px-3 py-2.5 sm:px-4 sm:py-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white">Export Excel</button>
+            <button id="export-csv" type="button" class="rounded-full border border-dusty px-3 py-2.5 sm:px-4 sm:py-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-navy">Export CSV</button>
+            <button id="export-pdf" type="button" class="rounded-full border border-dusty px-3 py-2.5 sm:px-4 sm:py-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-navy">Export PDF</button>
+            <button id="refresh-rsvps" type="button" class="rounded-full border border-dusty px-3 py-2.5 sm:px-4 sm:py-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-navy">Refresh</button>
+          </div>
+        </div>
+
+        <!-- Search Bar and Info -->
+        <div class="mt-5 sm:mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div class="w-full sm:max-w-sm">
+            <input id="search-input" type="text" placeholder="Search name, ID, status, notes..." class="field text-xs sm:text-sm" />
+          </div>
+          <div id="pagination-info" class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-steel">
+            Showing 0 - 0 of 0
+          </div>
+        </div>
+
+        <!-- Desktop Table View (md and up) -->
+        <div class="mt-4 hidden md:block overflow-x-auto">
+          <table id="rsvp-table" class="w-full min-w-[900px] border-collapse text-left text-sm">
+            <thead>
+              <tr class="border-b border-dusty/40 text-xs uppercase tracking-wider text-steel">
+                <th class="px-3 py-3">Guest ID / Ref ID</th>
+                <th class="px-3 py-3">Guest name</th>
+                <th class="px-3 py-3">Status</th>
+                <th class="px-3 py-3">Wish / message</th>
+                <th class="px-3 py-3">Approval</th>
+                <th class="px-3 py-3">Submission date</th>
+                <th class="px-3 py-3">Action</th>
+              </tr>
+            </thead>
+            <tbody id="rsvp-rows">
+              <tr><td class="px-3 py-5 text-slate-500" colspan="7">Loading submissions...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Cards View (below md) -->
+        <div id="mobile-rsvp-list" class="mt-4 space-y-3 md:hidden">
+          <div class="rounded-2xl border border-dusty/30 bg-white/50 p-4 text-center text-xs text-slate-500">Loading submissions...</div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="mt-6 flex items-center justify-between border-t border-dusty/20 pt-4">
+          <button id="prev-page" type="button" class="rounded-full border border-dusty px-4 py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-navy disabled:opacity-40" disabled>Previous</button>
+          <span id="page-number" class="text-xs font-bold text-navy">Page 1</span>
+          <button id="next-page" type="button" class="rounded-full border border-dusty px-4 py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-navy disabled:opacity-40" disabled>Next</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Offscreen Guest Pass Generator Template -->
+  <div class="fixed top-[-9999px] left-[-9999px]">
+    <div id="guest-pass" class="bg-[#F8FAFC] p-8 text-center text-[#2B4C7E]" style="width: 650px; font-family: Manrope, sans-serif">
+      <div class="relative overflow-hidden rounded-3xl border-2 border-[#82A0BC]/40 bg-white p-8">
+        <p class="text-[10px] font-bold uppercase tracking-[.3em] text-[#6082B6]">Wedding RSVP Confirmation Card</p>
+        <h2 class="mt-2 text-5xl font-bold tracking-wide" style="font-family: 'Cormorant Garamond', serif">Daniel &amp; Hannah</h2>
+        <p class="mt-4 text-xs uppercase tracking-widest text-[#6082B6]">This Pass Belongs To</p>
+        <p id="pass-guest-name" class="mt-1 text-3xl font-semibold" style="font-family: 'Cormorant Garamond', serif"></p>
+        <div class="mt-3 inline-block rounded-full border border-[#82A0BC]/30 bg-[#D6E4F0]/60 px-4 py-1.5">
+          <p class="text-[10px] font-bold uppercase tracking-wider">Ref ID: <span id="pass-guest-id" class="font-mono text-[#6082B6]">---</span></p>
+        </div>
+        <div class="my-6 rounded-2xl border border-[#82A0BC]/20 bg-[#F8FAFC] p-5">
+          <p class="text-sm font-medium leading-relaxed">“Thank you so much for confirming your attendance! Your presence and love mean the world to us as we begin this new chapter together.”</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4 border-t border-[#82A0BC]/20 pt-4 text-left">
+          <div><p class="text-[9px] font-bold uppercase tracking-wider text-[#6082B6]">Date &amp; Time</p><p class="text-xs font-semibold">Tuesday, Dec 29, 2026</p></div>
+          <div><p class="text-[9px] font-bold uppercase tracking-wider text-[#6082B6]">Venues</p><p class="text-xs font-semibold">IOWO Novaliches Church</p><p class="text-[10px] text-[#6082B6]">Artan Garden (Eiffel Tower)</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_PASSCODE = 'adminjosh123';
+    const SUPABASE_URL = 'https://mzquhkqyggctyxqfppqh.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16cXVoa3F5Z2djdHl4cWZwcHFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMjk2OTksImV4cCI6MjEwMjcwNTY5OX0.a7OKi1yDaxjPcoUpFplJgHPpwRSRtQb0YSgxSsNGRVY';
+    const db = window.supabase && !SUPABASE_URL.includes('YOUR-PROJECT') && !SUPABASE_ANON_KEY.includes('YOUR_') ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    const escapeHtml = value => { const node = document.createElement('div'); node.textContent = value || ''; return node.innerHTML; };
+    const setStatus = message => { document.getElementById('dashboard-status').textContent = message; };
+
+    let currentRsvps = [];
+    let filteredRsvps = [];
+    let guestNameMap = {};
+    let currentPage = 1;
+    const PAGE_SIZE = 30;
+
+    function renderTable() {
+      const desktopTarget = document.getElementById('rsvp-rows');
+      const mobileTarget = document.getElementById('mobile-rsvp-list');
+      
+      const totalFiltered = filteredRsvps.length;
+      const totalPages = Math.ceil(totalFiltered / PAGE_SIZE) || 1;
+
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * PAGE_SIZE;
+      const endIndex = Math.min(startIndex + PAGE_SIZE, totalFiltered);
+      const paginatedRows = filteredRsvps.slice(startIndex, endIndex);
+
+      document.getElementById('pagination-info').textContent = totalFiltered > 0 ? `Showing ${startIndex + 1} - ${endIndex} of ${totalFiltered}` : 'Showing 0 of 0';
+      document.getElementById('page-number').textContent = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById('prev-page').disabled = currentPage === 1;
+      document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
+
+      if (!paginatedRows.length) { 
+        desktopTarget.innerHTML = '<tr><td class="px-3 py-5 text-slate-500" colspan="7">No matching RSVP submissions found.</td></tr>'; 
+        mobileTarget.innerHTML = '<div class="rounded-2xl border border-dusty/30 bg-white/50 p-4 text-center text-xs text-slate-500">No matching RSVP submissions found.</div>';
+        return; 
+      }
+
+      // Render Desktop Rows
+      desktopTarget.innerHTML = paginatedRows.map(row => `
+        <tr class="border-b border-dusty/20 align-top">
+          <td class="px-3 py-4 font-mono text-xs font-bold text-steel">${escapeHtml(row.guest_id || 'N/A')}</td>
+          <td class="px-3 py-4 font-semibold">${escapeHtml(row.full_name || guestNameMap[row.guest_id])}</td>
+          <td class="px-3 py-4"><span class="rounded-full ${row.attendance === 'attending' ? 'bg-powder text-navy' : 'bg-slate-100 text-slate-600'} px-3 py-1 text-xs font-bold uppercase tracking-wider whitespace-nowrap">${escapeHtml(row.attendance)}</span></td>
+          <td class="max-w-xs whitespace-pre-wrap px-3 py-4 text-slate-600">${escapeHtml(row.wishes) || '-'}</td>
+          <td class="px-3 py-4 whitespace-nowrap">
+            <button 
+              data-approve-id="${row.id}" 
+              data-current-status="${!!row.approved}"
+              type="button" 
+              class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors ${
+                row.approved 
+                  ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' 
+                  : 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+              }"
+            >
+              ${row.approved ? '✓ Approved' : '⏳ Pending'}
+            </button>
+          </td>
+          <td class="px-3 py-4 text-slate-600 font-mono text-xs whitespace-nowrap">${row.created_at ? new Date(row.created_at).toLocaleString() : '-'}</td>
+          <td class="px-3 py-4"><button data-pass-id="${row.id}" type="button" class="whitespace-nowrap rounded-full bg-navy px-3 py-2 text-xs font-bold uppercase tracking-wider text-white">Pass</button></td>
+        </tr>
+      `).join('');
+
+      // Render Mobile Cards
+      mobileTarget.innerHTML = paginatedRows.map(row => `
+        <div class="rounded-2xl border border-dusty/30 bg-white/70 p-4 shadow-sm space-y-3">
+          <div class="flex items-start justify-between gap-2 border-b border-dusty/20 pb-2">
+            <div>
+              <span class="text-[10px] font-mono font-bold text-steel block">Ref ID: ${escapeHtml(row.guest_id || 'N/A')}</span>
+              <h3 class="font-semibold text-base">${escapeHtml(row.full_name || guestNameMap[row.guest_id])}</h3>
+              <p class="text-[10px] text-slate-500">${row.created_at ? new Date(row.created_at).toLocaleString() : '-'}</p>
+            </div>
+            <span class="rounded-full ${row.attendance === 'attending' ? 'bg-powder text-navy' : 'bg-slate-100 text-slate-600'} px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">${escapeHtml(row.attendance)}</span>
+          </div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-[10px] font-bold uppercase text-steel">Approval Status:</span>
+            <button 
+              data-approve-id="${row.id}" 
+              data-current-status="${!!row.approved}"
+              type="button" 
+              class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                row.approved 
+                  ? 'bg-emerald-100 text-emerald-800' 
+                  : 'bg-amber-100 text-amber-800'
+              }"
+            >
+              ${row.approved ? '✓ Approved' : '⏳ Pending'}
+            </button>
+          </div>
+
+          ${row.wishes ? `
+            <div class="text-xs">
+              <span class="text-[10px] font-bold uppercase text-steel block">Wish / Message</span>
+              <p class="text-slate-600 mt-0.5">${escapeHtml(row.wishes)}</p>
+            </div>
+          ` : ''}
+
+          <div class="pt-2 border-t border-dusty/20">
+            <button data-pass-id="${row.id}" type="button" class="w-full rounded-full bg-navy py-2 text-center text-xs font-bold uppercase tracking-wider text-white">Download Pass</button>
+          </div>
+        </div>
+      `).join('');
+
+      // Event Listeners
+      document.querySelectorAll('[data-pass-id]').forEach(button => button.addEventListener('click', () => { 
+        const row = currentRsvps.find(item => String(item.id) === button.dataset.passId); 
+        generatePass(row, guestNameMap[row?.guest_id]); 
+      }));
+
+      document.querySelectorAll('[data-approve-id]').forEach(button => button.addEventListener('click', () => {
+        const id = button.dataset.approveId;
+        const currentStatus = button.dataset.currentStatus === 'true';
+        toggleApproval(id, !currentStatus);
+      }));
+    }
+
+    async function toggleApproval(id, newStatus) {
+      if (!db) return;
+      setStatus('Updating approval status...');
+      const { error } = await db.from('rsvp').update({ approved: newStatus }).eq('id', id);
+
+      if (error) {
+        alert('Error updating status: ' + error.message);
+        setStatus('Failed to update approval status.');
+        return;
+      }
+
+      const targetRow = currentRsvps.find(item => String(item.id) === String(id));
+      if (targetRow) targetRow.approved = newStatus;
+
+      applyFilter();
+      setStatus(`Status successfully updated to ${newStatus ? 'Approved' : 'Pending'}.`);
+    }
+
+    function applyFilter() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      filteredRsvps = currentRsvps.filter(row => {
+        const guestId = (row.guest_id || '').toLowerCase();
+        const name = (row.full_name || guestNameMap[row.guest_id] || '').toLowerCase();
+        const status = (row.attendance || '').toLowerCase();
+        const wishes = (row.wishes || '').toLowerCase();
+        const approved = row.approved ? 'approved' : 'pending';
+        return guestId.includes(query) || name.includes(query) || status.includes(query) || wishes.includes(query) || approved.includes(query);
+      });
+      currentPage = 1;
+      renderTable();
+    }
+
+    function exportRows() { 
+      return currentRsvps.map(row => ({ 
+        'Guest ID': row.guest_id || '',
+        'Guest Name': row.full_name || guestNameMap[row.guest_id] || '', 
+        'Status': row.attendance || '', 
+        'Wish/Message': row.wishes || '', 
+        'Approved': row.approved ? 'Yes' : 'No',
+        'Submission Date': row.created_at ? new Date(row.created_at).toLocaleString() : '' 
+      })); 
+    }
+
+    function downloadBlob(filename, content, type) { 
+      const link = document.createElement('a'); 
+      link.href = URL.createObjectURL(new Blob([content], { type })); 
+      link.download = filename; 
+      link.click(); 
+      URL.revokeObjectURL(link.href); 
+    }
+
+    function exportCsv() { 
+      const rows = exportRows(); 
+      const columns = Object.keys(rows[0] || { 'Guest ID': '', 'Guest Name': '', Status: '', 'Wish/Message': '', Approved: '', 'Submission Date': '' }); 
+      const csv = [columns.join(','), ...rows.map(row => columns.map(column => `"${String(row[column] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n'); 
+      downloadBlob('daniel-hannah-rsvps.csv', csv, 'text/csv'); 
+    }
+
+    function exportXlsx() { 
+      const workbook = XLSX.utils.book_new(); 
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(exportRows()), 'RSVPs'); 
+      XLSX.writeFile(workbook, 'daniel-hannah-rsvps.xlsx'); 
+    }
+
+    function exportPdf() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+      doc.setFontSize(16);
+      doc.setTextColor(43, 76, 126);
+      doc.text('Daniel & Hannah - Attendees & RSVPs', 14, 15);
+      
+      doc.setFontSize(9);
+      doc.setTextColor(100);
+      doc.text(`Generated on: ${new Date().toLocaleString()} | Total Responses: ${currentRsvps.length}`, 14, 21);
+
+      const tableData = currentRsvps.map(row => [
+        row.guest_id || 'N/A',
+        row.full_name || guestNameMap[row.guest_id] || '',
+        (row.attendance || '').toUpperCase(),
+        row.wishes || '-',
+        row.approved ? 'YES' : 'NO',
+        row.created_at ? new Date(row.created_at).toLocaleString() : '-'
+      ]);
+
+      doc.autoTable({
+        startY: 25,
+        head: [['Guest ID', 'Guest Name', 'Status', 'Wish / Message', 'Approved', 'Submission Date']],
+        body: tableData,
+        theme: 'striped',
+        headStyles: { fillColor: [43, 76, 126], textColor: [255, 255, 255], fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        styles: { fontSize: 8, cellPadding: 3, overflow: 'linebreak' },
+        columnStyles: {
+          0: { cellWidth: 50 },  // Guest ID
+          1: { cellWidth: 55 },  // Guest Name
+          2: { cellWidth: 35, fontStyle: 'bold' }, // Status (pinalawak papuntang 35mm para kasya buo ang ATTENDING / DECLINING)
+          3: { cellWidth: 'auto' }, // Wish / Message
+          4: { cellWidth: 25 },  // Approved
+          5: { cellWidth: 45 }   // Submission Date
+        }
+      });
+
+      doc.save('daniel-hannah-rsvps.pdf');
+    }
+
+    async function loadRsvps() {
+      if (!db) { 
+        document.getElementById('rsvp-rows').innerHTML = '<tr><td class="px-3 py-5 text-red-700" colspan="7">Add Supabase URL and anon key in admin.html first.</td></tr>'; 
+        document.getElementById('mobile-rsvp-list').innerHTML = '<div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-center text-xs text-red-700">Add Supabase URL and anon key in admin.html first.</div>';
+        return; 
+      }
+      
+      const [{ data: rows, error: rsvpError }, { data: guests, error: guestsError, count: invitedCount }] = await Promise.all([
+        db.from('rsvp').select('id, created_at, guest_id, full_name, attendance, wishes, approved').order('created_at', { ascending: false }), 
+        db.from('guests').select('id, full_name', { count: 'exact' }).order('full_name', { ascending: true })
+      ]);
+      
+      if (rsvpError || guestsError) { 
+        const errText = `Could not load data. ${escapeHtml(rsvpError?.message || guestsError?.message)}`;
+        document.getElementById('rsvp-rows').innerHTML = `<tr><td class="px-3 py-5 text-red-700" colspan="7">${errText}</td></tr>`; 
+        document.getElementById('mobile-rsvp-list').innerHTML = `<div class="rounded-2xl border border-red-200 bg-red-50 p-4 text-center text-xs text-red-700">${errText}</div>`;
+        return; 
+      }
+      
+      currentRsvps = rows || [];
+      guestNameMap = Object.fromEntries((guests || []).map(guest => [guest.id, guest.full_name]));
+
+      document.getElementById('stat-invited').textContent = invitedCount ?? (guests ? guests.length : 0);
+      document.getElementById('stat-total').textContent = currentRsvps.length;
+      document.getElementById('stat-attending').textContent = currentRsvps.filter(row => row.attendance === 'attending').length;
+      document.getElementById('stat-declining').textContent = currentRsvps.filter(row => row.attendance === 'declining').length;
+
+      applyFilter(); 
+      setStatus(`Loaded ${currentRsvps.length} RSVP submission(s).`);
+    }
+
+    document.getElementById('search-input').addEventListener('input', applyFilter);
+    document.getElementById('prev-page').addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+    document.getElementById('next-page').addEventListener('click', () => { currentPage++; renderTable(); });
+    document.getElementById('refresh-rsvps').addEventListener('click', loadRsvps);
+    document.getElementById('export-xlsx').addEventListener('click', exportXlsx);
+    document.getElementById('export-csv').addEventListener('click', exportCsv);
+    document.getElementById('export-pdf').addEventListener('click', exportPdf);
+
+    async function generatePass(row, fallbackName) {
+      const name = row?.full_name || fallbackName || 'Guest';
+      document.getElementById('pass-guest-name').textContent = name;
+      document.getElementById('pass-guest-id').textContent = row?.guest_id || 'N/A';
+      const pass = document.getElementById('guest-pass');
+      
+      try { 
+        setStatus('Generating RSVP Pass...');
+        const canvas = await html2canvas(pass, { scale: 2, useCORS: true, backgroundColor: '#F8FAFC', logging: false }); 
+        const link = document.createElement('a'); 
+        link.href = canvas.toDataURL('image/png'); 
+        link.download = `RSVP-Card-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`; 
+        link.click(); 
+        setStatus('Pass generated successfully.');
+      } catch (err) {
+        alert('Failed to generate pass image.');
+        setStatus('Error generating pass.');
+      }
+    }
+
+    function unlock() { document.getElementById('login-modal').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden'); loadRsvps(); }
+    if (sessionStorage.getItem('wedding-admin-session') === 'unlocked') unlock();
+    document.getElementById('login-form').addEventListener('submit', event => { event.preventDefault(); if (document.getElementById('admin-password').value === ADMIN_PASSCODE) { sessionStorage.setItem('wedding-admin-session', 'unlocked'); unlock(); } else { document.getElementById('login-error').textContent = 'Incorrect passcode.'; } });
+    document.getElementById('logout').addEventListener('click', () => { sessionStorage.removeItem('wedding-admin-session'); window.location.reload(); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,779 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2B4C7E">
+  <meta name="description" content="The wedding invitation of Daniel and Hannah.">
+  <title>Daniel &amp; Hannah | Our Wedding</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- OPEN GRAPH META TAGS -->
+  <meta property="og:title" content="Wedding Invitation | Dan & Hannah" />
+  <meta property="og:description" content="We invite you to celebrate our special day with us! Click to view details and RSVP." />
+  <meta property="og:image" content="https://businessanalystalpha-prog.github.io/wedding-invitation-dan-hannah/Design/flower-top-left.PNG" />
+  <meta property="og:url" content="https://businessanalystalpha-prog.github.io/wedding-invitation-dan-hannah/" />
+  <meta property="og:type" content="website" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#2B4C7E', dusty: '#82A0BC', powder: '#D6E4F0', steel: '#6082B6', ice: '#F8FAFC'
+          },
+          fontFamily: { 
+            display: ['Cormorant Garamond', 'serif'], 
+            sans: ['Manrope', 'sans-serif'],
+            script: ['Great Vibes', 'cursive']
+          },
+          boxShadow: { glass: '0 20px 70px rgba(43, 76, 126, .12)' }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Great+Vibes&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Supabase & HTML2Canvas SDKs -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body class="font-sans antialiased overflow-x-hidden">
+
+  <!-- Welcome Overlay -->
+  <div id="welcome-overlay" class="fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-transparent text-center text-white">
+    <div id="curtain-left" class="curtain-panel curtain-left pointer-events-none absolute inset-y-0 left-0 z-20 w-[50.5%] sm:w-1/2 origin-left bg-navy shadow-2xl shadow-navy/30" aria-hidden="true">
+      <svg class="floral-sway absolute -left-14 -top-8 h-64 w-64 text-powder/30 sm:h-80 sm:w-80" viewBox="0 0 240 240" fill="none">
+        <path d="M12 220C40 160 75 112 142 70C168 54 188 31 206 8" stroke="currentColor" stroke-width="2"/>
+        <path d="M58 151C35 135 27 112 34 91C57 96 71 115 66 137M91 112C83 84 91 62 109 48C124 69 119 91 101 107M135 78C138 52 154 34 177 29C180 52 165 72 143 81" stroke="currentColor" stroke-width="2"/>
+        <circle class="floral-glow" cx="203" cy="11" r="8" fill="currentColor"/>
+      </svg>
+    </div>
+    <div id="curtain-right" class="curtain-panel curtain-right pointer-events-none absolute inset-y-0 right-0 z-20 w-[50.5%] sm:w-1/2 origin-right bg-navy shadow-2xl shadow-navy/30" aria-hidden="true">
+      <svg class="floral-drift absolute -bottom-16 -right-16 h-72 w-72 rotate-180 text-dusty/35 sm:h-96 sm:w-96" viewBox="0 0 240 240" fill="none">
+        <path d="M12 220C40 160 75 112 142 70C168 54 188 31 206 8" stroke="currentColor" stroke-width="2"/>
+        <path d="M58 151C35 135 27 112 34 91C57 96 71 115 66 137M91 112C83 84 91 62 109 48C124 69 119 91 101 107M135 78C138 52 154 34 177 29C180 52 165 72 143 81" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="welcome-sparkles" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="welcome-ribbon" aria-hidden="true"></div>
+    <div id="welcome-content" class="welcome-content relative z-30 max-w-md transition duration-500">
+  
+      <!-- Subtitle -->
+      <p class="text-xs font-bold uppercase tracking-[.3em] text-powder drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+        You are warmly invited
+      </p>
+      
+      <!-- Main Names -->
+      <h1 class="mt-5 font-display text-7xl font-semibold leading-[.8] sm:text-8xl drop-shadow-[0_4px_12px_rgba(0,0,0,0.7)]">
+        Daniel<br>
+        <span class="text-powder drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">&amp;</span> Hannah
+      </h1>
+      
+      <!-- Description Paragraph -->
+      <p class="mt-8 text-sm leading-7 text-white/90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]">
+        A celebration of love, family, and a lifetime together.
+      </p>
+      
+      <!-- Ribbon Seal -->
+      <div class="ribbon-seal shadow-[0_10px_30px_rgba(0,0,0,0.45)]" aria-hidden="true">
+        <span class="ribbon-seal-mark drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">D <span class="text-white/75">&amp;</span> H</span>
+      </div>
+      
+      <!-- Open Invitation Button -->
+      <button id="open-invitation" type="button" class="relative z-10 mt-[-18px] rounded-full bg-white px-7 py-4 text-xs font-bold uppercase tracking-[.2em] text-navy shadow-[0_10px_25px_rgba(0,0,0,0.35)] transition-all duration-300 hover:bg-powder hover:shadow-[0_15px_30px_rgba(0,0,0,0.45)] hover:-translate-y-0.5 active:translate-y-0">
+        Open Invitation
+      </button>
+
+    </div>
+  </div>
+
+  <div id="site-content" class="hidden">
+    <div class="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div class="ambient -left-28 top-24 h-72 w-72 bg-powder"></div>
+      <div class="ambient right-[-8rem] top-[38rem] h-96 w-96 bg-blue-100"></div>
+      <div class="ambient bottom-[-8rem] left-1/3 h-80 w-80 bg-sky-100"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="fixed inset-x-0 top-0 z-40 border-b border-white/50 bg-ice/80 backdrop-blur-xl">
+      <nav class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8" aria-label="Main navigation">
+        <a href="#home" class="font-display text-2xl font-semibold tracking-wide text-navy">D <span class="text-dusty">&amp;</span> H</a>
+        <div class="hidden items-center gap-5 text-xs font-bold uppercase tracking-[.18em] text-steel md:flex">
+          <a class="transition hover:text-navy" href="#gallery">Gallery</a>
+          <a class="transition hover:text-navy" href="#details">Details</a>
+          <a class="transition hover:text-navy" href="#attire">Attire</a>
+          <a class="transition hover:text-navy" href="#save-the-date">Film</a>
+          <a class="transition hover:text-navy" href="#wedding-party">Entourage</a>
+          <a class="transition hover:text-navy" href="#gift-guide">Gift</a>
+          <a class="transition hover:text-navy" href="#guestbook">Wishes</a>
+        </div>
+        <a href="#rsvp" class="rounded-full bg-navy px-4 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-navy/20 transition hover:bg-steel">RSVP</a>
+      </nav>
+    </header>
+
+    <main id="home">
+      <!-- Hero Section -->
+      <section class="relative mx-auto max-w-6xl px-5 pt-28 pb-12 sm:px-8 sm:pt-32 sm:pb-20">
+        <div class="relative overflow-hidden rounded-[2rem] bg-navy text-white shadow-xl">
+          <div class="absolute inset-0 z-0" aria-hidden="true">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1800&q=85" alt="" class="h-full w-full object-cover object-center">
+            <div class="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/60 to-navy/30 lg:bg-gradient-to-r lg:from-navy/95 lg:via-navy/70 lg:to-transparent"></div>
+          </div>
+
+          <div class="relative z-10 max-w-2xl px-6 py-10 sm:px-12 sm:py-16">
+            <p class="fade-up mb-4 text-xs font-bold uppercase tracking-[.28em] text-powder">Together with their families</p>
+            <h1 class="fade-up delay-1 font-display text-5xl font-semibold leading-[.9] sm:text-7xl lg:text-8xl">Daniel<br><span class="text-powder">&amp;</span> Hannah</h1>
+            <p class="fade-up delay-2 mt-6 max-w-md text-sm leading-6 text-white/85 sm:text-base">We invite you to celebrate the beginning of their forever.</p>
+            
+            <div class="mt-8 max-w-2xl text-left" aria-label="Wedding countdown">
+              <p class="mb-3 text-xs font-bold uppercase tracking-[.24em] text-powder">Counting down to our day</p>
+              <div id="countdown" class="grid max-w-xl grid-cols-4 gap-2 sm:gap-4" aria-live="polite">
+                <div class="rounded-2xl border border-white/20 bg-white/10 px-2 py-3 text-center backdrop-blur-md sm:py-4"><strong id="days" class="font-display text-2xl sm:text-5xl">--</strong><span class="mt-1 block text-[9px] font-bold uppercase tracking-widest text-powder">Days</span></div>
+                <div class="rounded-2xl border border-white/20 bg-white/10 px-2 py-3 text-center backdrop-blur-md sm:py-4"><strong id="hours" class="font-display text-2xl sm:text-5xl">--</strong><span class="mt-1 block text-[9px] font-bold uppercase tracking-widest text-powder">Hours</span></div>
+                <div class="rounded-2xl border border-white/20 bg-white/10 px-2 py-3 text-center backdrop-blur-md sm:py-4"><strong id="minutes" class="font-display text-2xl sm:text-5xl">--</strong><span class="mt-1 block text-[9px] font-bold uppercase tracking-widest text-powder">Minutes</span></div>
+                <div class="rounded-2xl border border-white/20 bg-white/10 px-2 py-3 text-center backdrop-blur-md sm:py-4"><strong id="seconds" class="font-display text-2xl sm:text-5xl">--</strong><span class="mt-1 block text-[9px] font-bold uppercase tracking-widest text-powder">Seconds</span></div>
+              </div>
+            </div>
+
+            <div class="fade-up delay-3 mt-8 flex flex-wrap items-center gap-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-widest">
+              <span class="rounded-full bg-white/15 px-4 py-2 border border-white/25 backdrop-blur-md text-white">Tuesday, 29 December 2026</span>
+              <span class="rounded-full border border-white/25 bg-white/10 px-4 py-2 backdrop-blur-md text-white">Novaliches, Quezon City</span>
+            </div>
+
+            <div class="mt-4 flex items-center gap-2 rounded-full border border-amber-300/80 bg-amber-500/20 px-4 py-1.5 w-fit backdrop-blur-md shadow-sm">
+              <svg class="h-3.5 w-3.5 text-amber-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+              <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200">Please keep this invitation private</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gallery -->
+      <section id="gallery" class="mx-auto max-w-6xl scroll-mt-20 px-5 py-16 sm:px-8">
+        <div class="mb-10"><div class="section-rule mb-5"></div><p class="text-xs font-bold uppercase tracking-[.24em] text-steel">Little moments, big memories</p><h2 class="mt-2 font-display text-5xl font-semibold">Our story in frames</h2></div>
+        <div class="relative overflow-hidden rounded-3xl bg-navy shadow-glass">
+          <div id="carousel-track" class="relative aspect-[4/5] sm:aspect-[16/8]"></div>
+          <button id="carousel-prev" type="button" class="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-xl text-navy shadow-lg" aria-label="Previous featured photo">&#8592;</button>
+          <button id="carousel-next" type="button" class="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-xl text-navy shadow-lg" aria-label="Next featured photo">&#8594;</button>
+          <div id="carousel-dots" class="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2"></div>
+        </div>
+        <div id="gallery-grid" class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4"></div>
+      </section>
+
+      <!-- Details -->
+      <section id="details" class="mx-auto max-w-6xl scroll-mt-20 px-5 py-16 sm:px-8">
+        <div class="mb-10">
+          <div class="section-rule mb-5"></div>
+          <p class="text-xs font-bold uppercase tracking-[.24em] text-steel">The celebration</p>
+          <h2 class="mt-2 font-display text-5xl font-semibold">A day to remember</h2>
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-2">
+          <!-- Ceremony Card -->
+          <article class="glass detail-card-bg detail-ceremony-bg rounded-3xl p-7 sm:p-9">
+            <div class="relative z-10">
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-widest text-navy text-shadow-subtle">01 / Ceremony</p>
+                  <h3 class="mt-5 font-display text-4xl font-semibold text-navy text-shadow-strong">IOWO Novaliches Church</h3>
+                </div>
+                <span class="text-3xl text-navy text-shadow-subtle" aria-hidden="true">&#10022;</span>
+              </div>
+              <p class="mt-6 text-sm font-semibold text-navy text-shadow-strong">Tuesday, 29 December 2026</p>
+              <p class="mt-3 text-sm leading-6 text-slate-800 font-medium text-shadow-subtle">Ceremony details will be shared with your invitation.</p>
+              <a class="mt-7 inline-flex items-center gap-2 rounded-full bg-navy px-5 py-3 text-xs font-bold uppercase tracking-widest text-white shadow-md hover:bg-steel transition" href="https://maps.app.goo.gl/1Ft6YPTEAuf413cSA" target="_blank" rel="noopener noreferrer">Open in Google Maps <span aria-hidden="true">&#8599;</span></a>
+            </div>
+          </article>
+
+          <!-- Reception Card -->
+          <article class="glass detail-card-bg detail-reception-bg rounded-3xl p-7 sm:p-9">
+            <div class="relative z-10">
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-widest text-navy text-shadow-subtle">02 / Reception</p>
+                  <h3 class="mt-5 font-display text-4xl font-semibold text-navy text-shadow-strong">Artan Garden</h3>
+                  <p class="mt-1 text-sm text-navy font-semibold text-shadow-subtle">Eiffel Tower</p>
+                </div>
+                <span class="text-3xl text-navy text-shadow-subtle" aria-hidden="true">&#10022;</span>
+              </div>
+              <p class="mt-6 text-sm font-semibold text-navy text-shadow-strong">Dinner, Toasts &amp; Celebrate</p>
+              <p class="mt-3 text-sm leading-6 text-slate-800 font-medium text-shadow-subtle">Please follow the map pin for the reception entrance.</p>
+              <a class="mt-7 inline-flex items-center gap-2 rounded-full bg-navy px-5 py-3 text-xs font-bold uppercase tracking-widest text-white shadow-md hover:bg-steel transition" href="https://maps.app.goo.gl/uCjqmfek6kR3zmUN8" target="_blank" rel="noopener noreferrer">Open in Google Maps <span aria-hidden="true">&#8599;</span></a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Attire -->
+      <section id="attire" class="scroll-mt-20 bg-powder/35 px-5 py-20 sm:px-8">
+        <div class="mx-auto max-w-6xl">
+          <div class="grid items-center gap-10 lg:grid-cols-[.8fr_1.2fr]">
+            <div><div class="section-rule mb-5"></div><p class="text-xs font-bold uppercase tracking-[.24em] text-steel">Our Wedding Motif</p><h2 class="mt-2 font-display text-5xl font-semibold">Attire Guide</h2><p class="mt-5 max-w-md text-sm leading-7 text-slate-600">Formal or semi-formal attire is perfect. We would love to see you in any shade of blue that feels like you.</p></div>
+            <div class="glass rounded-3xl p-7 sm:p-10">
+              <div class="grid grid-cols-4 gap-3 sm:gap-6">
+                <div><div class="aspect-square rounded-full bg-navy ring-4 ring-white/70"></div><p class="mt-3 text-center text-[10px] font-bold uppercase tracking-wider text-navy">Navy</p></div>
+                <div><div class="aspect-square rounded-full bg-dusty ring-4 ring-white/70"></div><p class="mt-3 text-center text-[10px] font-bold uppercase tracking-wider text-navy">Dusty</p></div>
+                <div><div class="aspect-square rounded-full bg-powder ring-4 ring-white/70"></div><p class="mt-3 text-center text-[10px] font-bold uppercase tracking-wider text-navy">Powder</p></div>
+                <div><div class="aspect-square rounded-full bg-steel ring-4 ring-white/70"></div><p class="mt-3 text-center text-[10px] font-bold uppercase tracking-wider text-navy">Steel</p></div>
+              </div>
+              <p class="mt-8 border-t border-dusty/30 pt-6 text-center text-xs font-semibold uppercase tracking-widest text-steel">Formal / semi-formal &middot; shades of blue</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Save The Date Film -->
+      <section id="save-the-date" class="mx-auto max-w-5xl scroll-mt-20 px-5 py-20 sm:px-8">
+        <div class="glass rounded-3xl p-5 sm:p-8">
+          <div><div class="section-rule mb-5"></div><p class="text-xs font-bold uppercase tracking-[.24em] text-steel">Save the date</p><h2 class="mt-2 font-display text-5xl font-semibold">Our Story on Film</h2></div>
+          <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">A little preview of the story that brought us here.</p>
+          <div class="mt-7 aspect-video overflow-hidden rounded-2xl bg-navy shadow-lg">
+            <!-- YouTube Video Embed -->
+            <iframe 
+              class="h-full w-full border-0" 
+              src="https://www.youtube.com/embed/fXN-m49MHO0?si=nI9eZsBEIByb6XVX" 
+              title="Daniel & Hannah - Save The Date" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <!-- Wedding Party Container -->
+        <div id="wedding-party" class="mt-16 mx-auto max-w-3xl scroll-mt-20">
+          <div class="glass card-floral-container relative overflow-hidden rounded-3xl p-6 sm:p-12 text-center shadow-glass border border-white/60">
+            <!-- Floral Accent Corner Images -->
+            <img src="Design/right-curtain.png" class="curtain-right" alt="Floral Accent Top Right">
+            <img src="Design/left-curtain.png" class="curtain-left" alt="Floral Accent Top Left">
+
+            <div class="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-powder/50 blur-2xl"></div>
+            <div class="pointer-events-none absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-dusty/20 blur-2xl"></div>
+
+            <!-- TEXT WRAPPER BOX WITH BACKDROP BLUR & SHADOW -->
+            <div class="relative z-10 mx-auto max-w-md rounded-2xl bg-white/75 p-6 sm:p-8 backdrop-blur-md shadow-lg border border-white/80">
+              <div class="section-rule mx-auto mb-4 bg-dusty"></div>
+              <p class="text-xs font-bold uppercase tracking-[0.26em] text-steel">Standing By Our Side</p>
+              <h3 class="mt-2 font-display text-4xl sm:text-5xl font-semibold text-navy text-shadow-strong">The Wedding Party</h3>
+              
+              <p class="mt-3 text-xs sm:text-sm text-slate-700 max-w-xs sm:max-w-md mx-auto leading-relaxed font-medium">
+                Meet the special people who will walk with us as we say our vows and celebrate this milestone.
+              </p>
+
+              <div class="mt-6 sm:mt-8">
+                <button id="open-entourage-modal" type="button" class="group inline-flex items-center gap-3 rounded-full bg-navy px-6 py-3.5 sm:px-8 sm:py-4 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg shadow-navy/20 transition-all duration-300 hover:bg-steel hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+                  <span>View Full Entourage</span>
+                  <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Entourage Modal -->
+        <div id="entourage-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+          <div class="bg-watermark-backdrop">
+            <span class="font-script text-white text-lg sm:text-2xl tracking-widest drop-shadow-md">Daniel &amp; Hannah</span>
+          </div>
+
+          <div class="modal-container">
+            <!-- Decorative PNG Floral Accents -->
+            <img src="Design/flower-top-left.PNG" class="floral-corner floral-top-left" alt="Floral Accent Top Left">
+            <img src="Design/flower-top-left.PNG" class="floral-corner floral-bottom-right" alt="Floral Accent Bottom Right">
+
+            <!-- Sticky Close Button -->
+            <button id="close-entourage-modal" type="button" class="modal-close-btn" aria-label="Close modal">&times;</button>
+
+            <!-- Scrollable Content Container -->
+            <div class="modal-body-scroll space-y-6 text-navy">
+              
+              <!-- Modal Header Section -->
+              <div class="text-center mb-8 flex flex-col items-center justify-center">
+                <span class="font-script text-3xl sm:text-4xl text-steel leading-tight">Our Beloved Entourage</span>
+                <h3 class="font-display text-4xl sm:text-5xl font-semibold text-navy leading-snug mt-1">Wedding Entourage</h3>
+              </div>
+
+              <!-- Wedding Officiant -->
+              <div class="text-center bg-white/65 backdrop-blur-sm p-5 rounded-2xl border border-dusty/30 shadow-sm transition hover:shadow-md">
+                <p class="font-display text-xs font-bold uppercase tracking-wider text-steel">Wedding Officiant</p>
+                <p class="font-display text-xl sm:text-2xl font-medium text-navy mt-1">Pstr. Pijeme Walawala</p>
+              </div>
+
+              <!-- Parents Grid -->
+              <div class="grid gap-5 sm:grid-cols-2">
+                <div class="p-5 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/30 shadow-sm transition hover:shadow-md">
+                  <p class="font-display text-xs font-bold uppercase tracking-wider text-center text-steel mb-2">Parents of the Groom</p>
+                  <p class="font-display text-lg sm:text-xl font-medium text-navy">• Mr. Antonio Dayon</p>
+                  <p class="font-display text-lg sm:text-xl font-medium text-navy mt-1">• Mrs. Imelda Dayon</p>
+                </div>
+                <div class="p-5 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/30 shadow-sm transition hover:shadow-md">
+                  <p class="font-display text-xs font-bold uppercase tracking-wider text-center text-steel mb-2">Parents of the Bride</p>
+                  <p class="font-display text-lg sm:text-xl font-medium text-navy">• Mr. Gaudencio Fernandez</p>
+                  <p class="font-display text-lg sm:text-xl font-medium text-navy mt-1">• Mrs. Angelina Fernandez</p>
+                </div>
+              </div>
+
+              <!-- Maid of Honor & Best Man -->
+              <div class="grid gap-5 sm:grid-cols-2">
+                <div class="p-5 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/40 shadow-sm transition hover:shadow-md">
+                  <p class="font-display text-xs font-bold uppercase tracking-wider text-center text-steel">Maid of Honor</p>
+                  <p class="font-display text-xl sm:text-2xl font-medium text-navy mt-1">Ms. Vanessa Fernandez</p>
+                </div>
+                <div class="p-5 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/40 shadow-sm transition hover:shadow-md">
+                  <p class="font-display text-xs font-bold uppercase tracking-wider text-center text-steel">Best Man</p>
+                  <p class="font-display text-xl sm:text-2xl font-medium text-navy mt-1">Mr. Mario Agag</p>
+                </div>
+              </div>
+
+              <!-- Principal Sponsors -->
+              <div class="p-6 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/30 shadow-sm">
+                <div class="text-center mb-4">
+                  <span class="font-script text-3xl sm:text-4xl text-steel block">Principal Sponsors</span>
+                </div>
+                <ul class="grid gap-2.5 sm:grid-cols-2 font-display text-base sm:text-lg font-medium text-navy">
+                  <li>• Mr. Roger Linas &amp; Mrs. Mailyn Linas</li>
+                  <li>• Pstr. Ruel Sambayon &amp; Pstra. Lenny Sambayon</li>
+                  <li>• Pstr. Mervin Pabiran &amp; Pstra. Marieta Pabiran</li>
+                  <li>• Mr. Estrello Alas &amp; Mrs. Editha Alas</li>
+                  <li>• Mr. Richard Habungan &amp; Mrs. Elaine Habungan</li>
+                  <li>• Mr. Noli Cadsawan &amp; Mrs. Jocelyn Cadsawan</li>
+                </ul>
+              </div>
+
+              <!-- Secondary Sponsors -->
+              <div class="p-6 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/30 shadow-sm">
+                <div class="text-center mb-5">
+                  <span class="font-script text-3xl sm:text-4xl text-steel block">Secondary Sponsors</span>
+                </div>
+                <div class="grid gap-5 sm:grid-cols-3 text-navy">
+                  <div>
+                    <p class="font-display text-xs font-bold uppercase tracking-wider text-steel">Candle <span class="normal-case font-normal text-[11px] block text-slate-500">(To Light Our Path)</span></p>
+                    <p class="font-display text-base sm:text-lg font-medium mt-1.5 leading-snug">Pstr. Melvin Mato &amp; Pstra. Jenny Mato</p>
+                  </div>
+                  <div>
+                    <p class="font-display text-xs font-bold uppercase tracking-wider text-steel">Veil <span class="normal-case font-normal text-[11px] block text-slate-500">(To Clothe Us As One)</span></p>
+                    <p class="font-display text-base sm:text-lg font-medium mt-1.5 leading-snug">Mr. Philip Dayon &amp; Mrs. Grea Jane Dayon</p>
+                  </div>
+                  <div>
+                    <p class="font-display text-xs font-bold uppercase tracking-wider text-steel">Cord <span class="normal-case font-normal text-[11px] block text-slate-500">(To Bind Us Together)</span></p>
+                    <p class="font-display text-base sm:text-lg font-medium mt-1.5 leading-snug">Mr. Peter Lamoste &amp; Mrs. Liyag Mutya Lamoste</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bridesmaids & Groomsmen -->
+              <div class="grid gap-5 sm:grid-cols-2">
+                <div class="p-5 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/30 shadow-sm">
+                  <div class="text-center mb-3">
+                    <span class="font-script text-3xl sm:text-4xl text-steel block">Bridesmaids</span>
+                  </div>
+                  <ul class="space-y-1.5 font-display text-base sm:text-lg font-medium text-navy">
+                    <li>• Ms. Lovely Xyrine Nasol</li>
+                    <li>• Ms. Doxa Rapha Lamoste</li>
+                    <li>• Ms. Elisha Marie Yanga</li>
+                    <li>• Ms. Ricamae Panlilio</li>
+                    <li>• Ms. Angel Mae Jereza</li>
+                  </ul>
+                </div>
+                <div class="p-5 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/30 shadow-sm">
+                  <div class="text-center mb-3">
+                    <span class="font-script text-3xl sm:text-4xl text-steel block">Groomsmen</span>
+                  </div>
+                  <ul class="space-y-1.5 font-display text-base sm:text-lg font-medium text-navy">
+                    <li>• Mr. Josiah Elijah Fernandez</li>
+                    <li>• Mr. Justine Reid Sabiron</li>
+                    <li>• Mr. John Paul Ombac</li>
+                    <li>• Mr. Carlo Ombac</li>
+                    <li>• Mr. Rafael Punzalan</li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Bearers & Flower Girls -->
+              <div class="grid gap-5 sm:grid-cols-2">
+                <div class="p-5 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/30 shadow-sm">
+                  <div class="text-center mb-3">
+                    <span class="font-script text-3xl sm:text-4xl text-steel block">Bearers</span>
+                  </div>
+                  <div class="space-y-2 font-display text-base text-navy">
+                    <div>
+                      <span class="font-display text-xs font-bold uppercase tracking-wider text-steel block">Ring Bearer</span>
+                      <p class="font-medium text-lg">Armi Jemyre Aballe</p>
+                    </div>
+                    <div>
+                      <span class="font-display text-xs font-bold uppercase tracking-wider text-steel block">Bible Bearer</span>
+                      <p class="font-medium text-lg">Louie Harty</p>
+                    </div>
+                    <div>
+                      <span class="font-display text-xs font-bold uppercase tracking-wider text-steel block">Coin Bearer</span>
+                      <p class="font-medium text-lg">James Harty</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-5 rounded-2xl bg-white/65 backdrop-blur-sm border border-dusty/30 shadow-sm">
+                  <div class="text-center mb-3">
+                    <span class="font-script text-3xl sm:text-4xl text-steel block">Flower Girls</span>
+                  </div>
+                  <ul class="space-y-1.5 font-display text-base sm:text-lg font-medium text-navy">
+                    <li>• Eliannah Praise Lamoste</li>
+                    <li>• Zepherina Elysse Dayon</li>
+                    <li>• Gabrielle Dayon</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gift Guide -->
+      <section id="gift-guide" class="mx-auto max-w-3xl scroll-mt-20 px-5 py-16 sm:px-8">
+        <div class="glass card-floral-container relative overflow-hidden rounded-3xl px-7 py-10 text-center shadow-glass sm:px-12 sm:py-14">
+          <!-- Floral Accent Corner Images -->
+          <img src="Design/flower_blue_2.png" class="rsvp-floral-corner rsvp-floral-top-left" alt="Floral Accent Top Left">
+          <img src="Design/flower_blue_1.png" class="rsvp-floral-corner rsvp-floral-bottom-right" alt="Floral Accent Bottom Right">
+
+          <div class="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-powder/55 blur-2xl"></div>
+          <div class="pointer-events-none absolute -bottom-12 -left-12 h-40 w-40 rounded-full bg-dusty/20 blur-2xl"></div>
+          <div class="relative z-10">
+            <div class="section-rule mx-auto mb-5"></div>
+            <p class="text-xs font-bold uppercase tracking-[.24em] text-steel">A thoughtful blessing</p>
+            <h2 class="mt-2 font-display text-4xl font-semibold text-navy sm:text-5xl">Gift Guide</h2>
+            <p class="mx-auto mt-6 max-w-2xl font-display text-xl italic leading-relaxed text-navy sm:text-2xl">Your presence at our wedding is the greatest gift of all, and your prayers mean so much to us. If you wish to bless us with a gift, a monetary gift would be greatly appreciated.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RSVP Form -->
+      <section id="rsvp" class="mx-auto max-w-3xl scroll-mt-20 px-5 py-20 sm:px-8">
+        <div class="text-center">
+          <div class="section-rule mx-auto mb-5"></div>
+          <p class="text-xs font-bold uppercase tracking-[.24em] text-steel">Kindly reply</p>
+          <h2 class="mt-2 font-display text-4xl font-semibold leading-[1.08] sm:text-5xl">Will you join us?</h2>
+          <div class="mx-auto mt-5 flex max-w-full items-center justify-center gap-2 rounded-full border border-steel/20 bg-powder/40 px-4 py-2 text-center text-navy shadow-sm sm:px-5">
+            <svg class="h-4 w-4 text-steel" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span class="text-[10px] font-bold uppercase leading-4 tracking-[.14em] sm:text-xs sm:tracking-widest">Please keep this invitation private</span>
+          </div>
+          <div class="mt-4 space-y-1 text-sm text-slate-600">
+            <p class="font-medium">We have reserved a seat for you! The favor of your reply is kindly requested on or before <strong class="text-navy">7 December 2026</strong>.</p>
+            <p class="text-xs italic text-steel">Please note that seats are reserved strictly upon confirmation.</p>
+          </div>
+        </div>
+    
+        <form id="rsvp-form" class="glass rsvp-container mt-10 rounded-3xl p-6 sm:p-10 relative overflow-hidden" novalidate>
+          <!-- Bagong Gitnang Floral Accents -->
+          <img src="Design/top-flower.png" class="rsvp-floral-top" alt="Floral Accent Top Center">
+          <img src="Design/bottom-flower.png" class="rsvp-floral-bottom" alt="Floral Accent Bottom Center">
+
+          <div class="relative z-20 grid gap-5 sm:grid-cols-2">
+            <div class="sm:col-span-2 relative">
+              <label for="guest-search-input" class="field-label">Search &amp; Select Your Name *</label>
+              <input type="text" id="guest-search-input" placeholder="Type your name here..." autocomplete="off" class="field" />
+              <input type="hidden" id="selected-guest-id" name="guest_id" required />
+              <ul id="guest-results-list" class="hidden absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-xl border border-steel/30 bg-white/95 py-1 shadow-2xl backdrop-blur-md text-sm text-navy"></ul>
+            </div>
+
+            <!-- Attendance Custom Dropdown -->
+            <div>
+              <label class="field-label">Attendance *</label>
+              <div class="relative" id="attendance-dropdown-container">
+                <button type="button" id="attendance-trigger" class="field flex items-center justify-between text-left font-medium cursor-pointer">
+                  <span id="attendance-selected-text">Joyfully attending</span>
+                  <svg class="h-4 w-4 text-steel transition-transform duration-200" id="attendance-arrow" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                  </svg>
+                </button>
+                <div id="attendance-options" class="hidden absolute left-0 right-0 z-50 mt-1.5 overflow-hidden rounded-xl border border-steel/30 bg-white/95 p-1.5 shadow-2xl backdrop-blur-md text-sm text-navy space-y-1">
+                  <div class="attendance-option cursor-pointer rounded-lg px-4 py-2.5 font-semibold bg-powder/60 text-navy hover:bg-powder transition-colors flex items-center justify-between" data-value="attending">
+                    <span>Joyfully attending</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider bg-navy text-white px-2 py-0.5 rounded-full">Yes</span>
+                  </div>
+                  <div class="attendance-option cursor-pointer rounded-lg px-4 py-2.5 font-medium text-slate-600 hover:bg-slate-100 hover:text-navy transition-colors flex items-center justify-between" data-value="declining">
+                    <span>Sadly declining</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full">No</span>
+                  </div>
+                </div>
+                <input type="hidden" name="attendance" id="attendance-input" value="attending">
+              </div>
+            </div>
+
+            <label class="sm:col-span-2 block">
+              <div class="flex justify-between items-center mb-1">
+                <span class="field-label !mb-0">A declaration for Daniel &amp; Hannah</span>
+                <span id="wishes-counter" class="text-[10px] font-bold text-steel">0 / 250</span>
+              </div>
+              <textarea id="wishes-input" name="wishes" rows="4" maxlength="250" class="field resize-none" placeholder="Leave a little love for the couple..."></textarea>
+            </label>
+          </div>
+          <button id="rsvp-submit" type="submit" class="relative z-20 mt-6 w-full rounded-full bg-navy px-6 py-4 text-xs font-bold uppercase tracking-[.2em] text-white transition hover:bg-steel disabled:cursor-wait disabled:opacity-60">Send my RSVP</button>
+          <p id="form-status" class="relative z-20 mt-4 text-center text-sm" role="status"></p>
+        </form>
+      </section>
+      
+      <!-- Wishes Marquee -->
+      <section id="guestbook" class="relative overflow-hidden scroll-mt-20 bg-navy px-0 py-16 text-white sm:py-20">
+        <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-25">
+          <div class="animate-floral h-full w-full bg-[radial-gradient(#93c5fd_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
+        </div>
+        <div class="relative z-10">
+          <div class="mx-auto max-w-6xl px-5 sm:px-8">
+            <div class="section-rule mb-5 bg-powder"></div>
+            <p class="text-xs font-bold uppercase tracking-[.24em] text-powder">Words from our favorite people</p>
+            <h2 class="mt-2 max-w-xl font-display text-4xl font-semibold leading-[1.05] sm:text-5xl">A Declaration for Daniel &amp; Hannah</h2>
+            <p id="guestbook-status" class="mt-3 max-w-2xl text-sm leading-6 text-white/65">Be the first to leave a wish.</p>
+          </div>
+          <div class="relative mt-9 overflow-hidden" aria-label="Guest wishes">
+            <div id="guestbook-list" class="wishes-marquee-track" tabindex="0"></div>
+          </div>
+          <div class="mx-auto mt-8 max-w-6xl px-5 sm:px-8">
+            <div class="border-t border-white/10 pt-6 text-center">
+              <blockquote class="font-display text-xl italic leading-relaxed text-powder sm:text-2xl">“We love because He first loved us.”</blockquote>
+              <p class="mt-2 text-[10px] font-bold uppercase tracking-[.3em] text-dusty">1 John 4:19</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="w-full bg-[#F4F6F8] px-5 py-8 text-center text-xs text-[#6082B6] border-t border-[#82A0BC]/20 sm:px-8">
+      <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
+        <p id="admin-secret-trigger" class="font-medium select-none cursor-default">With love, Daniel &amp; Hannah</p>
+        <p>29.12.2026</p>
+      </div>
+    </footer>
+
+    <!-- Audio Player Toggle -->
+    <button id="music-toggle" type="button" class="fixed bottom-5 right-5 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-white text-navy shadow-xl shadow-navy/20" aria-label="Play background music" title="Play background music">
+      <span id="music-icon" aria-hidden="true">&#9835;</span>
+    </button>
+    <audio id="wedding-audio" loop preload="none" src="Music/Wedding songs.mp3"></audio>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-navy/95 p-2 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="lightbox-caption">
+      <div class="bg-watermark-backdrop">
+        <span class="font-script text-white text-lg sm:text-2xl tracking-widest drop-shadow-md">Daniel &amp; Hannah</span>
+      </div>
+
+      <button id="lightbox-close" type="button" class="lightbox-nav-btn absolute right-3 top-3 sm:right-5 sm:top-5 z-30 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/15 text-xl sm:text-2xl text-white backdrop-blur-md" aria-label="Close image viewer">&times;</button>
+      <button id="lightbox-prev" type="button" class="lightbox-nav-btn absolute left-2 sm:left-4 top-1/2 z-30 flex h-10 w-10 sm:h-11 sm:w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-lg sm:text-xl text-white backdrop-blur-md" aria-label="Previous gallery photo">&#8592;</button>
+      
+      <figure class="relative max-w-5xl text-center w-full flex flex-col items-center justify-center">
+        <div class="relative inline-block max-h-[75vh] max-w-full overflow-hidden rounded-xl">
+          <img id="lightbox-image" src="" alt="" class="max-h-[75vh] max-w-full object-contain block mx-auto">
+          <div class="img-watermark-overlay">
+            <span class="font-script text-white text-base sm:text-xl tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Daniel &amp; Hannah</span>
+          </div>
+        </div>
+
+        <figcaption id="lightbox-caption" class="mt-3 font-script text-2xl sm:text-4xl text-powder tracking-wider drop-shadow-md"></figcaption>
+      </figure>
+
+      <button id="lightbox-next" type="button" class="lightbox-nav-btn absolute right-2 sm:right-4 top-1/2 z-30 flex h-10 w-10 sm:h-11 sm:w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-lg sm:text-xl text-white backdrop-blur-md" aria-label="Next gallery photo">&#8594;</button>
+    </div>
+  </div>
+
+  <!-- Custom Alert Modal -->
+  <div id="alert-modal" class="fixed inset-0 z-[1100] hidden flex items-center justify-center bg-navy/80 backdrop-blur-md p-4 transition-opacity duration-300">
+    <div class="relative w-full max-w-md overflow-hidden rounded-3xl bg-white/95 p-6 sm:p-8 text-center shadow-2xl border border-powder/50 text-navy">
+      <div id="alert-modal-icon" class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-powder/40 text-navy shadow-inner"></div>
+      <h3 id="alert-modal-title" class="font-display text-3xl font-semibold tracking-wide text-navy">Confirm Action</h3>
+      <p id="alert-modal-message" class="mt-2 text-sm leading-relaxed text-slate-600">Are you sure you want to proceed with this submission?</p>
+
+      <div id="alert-modal-actions" class="mt-6 flex items-center justify-center gap-3">
+        <button id="alert-modal-cancel" type="button" class="hidden rounded-full border border-slate-300 px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 transition hover:bg-slate-100">
+          Cancel
+        </button>
+        <button id="alert-modal-confirm" type="button" class="rounded-full bg-navy px-7 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-navy/20 transition hover:bg-steel">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Picture Pass Template -->
+  <div id="pdf-pass" style="position: fixed; top: 0; left: 0; width: 650px; font-family: 'Manrope', sans-serif; z-index: -50; opacity: 0; pointer-events: none;" class="bg-[#F8FAFC] p-8 text-center text-[#2B4C7E]">
+    <div class="relative overflow-hidden rounded-3xl border-2 border-[#82A0BC]/40 bg-white pt-8 px-8 pb-14 shadow-xl">
+      <!-- Left Floral Accent -->
+      <svg class="pointer-events-none absolute left-0 top-0 h-36 w-36 text-[#82A0BC]/55" viewBox="0 0 150 150" fill="none" aria-hidden="true">
+        <path d="M6 8c31 5 48 24 52 53 4 28 17 51 44 68" stroke="#2B4C7E" stroke-width="2" stroke-linecap="round"/>
+        <path d="M15 17c18 3 29 14 34 31M27 9c5 17 1 29-12 39M49 48c17-3 30 3 39 18M65 75c-1 15 5 27 19 36" stroke="#82A0BC" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="15" cy="17" r="5" fill="#D6E4F0" stroke="#2B4C7E"/>
+        <circle cx="49" cy="48" r="5" fill="#D6E4F0" stroke="#82A0BC"/>
+        <circle cx="65" cy="75" r="4" fill="#D6E4F0" stroke="#2B4C7E"/>
+      </svg>
+
+      <!-- Right Floral Accent -->
+      <svg class="pointer-events-none absolute bottom-0 right-0 h-36 w-36 rotate-180 text-[#82A0BC]/55" viewBox="0 0 150 150" fill="none" aria-hidden="true">
+        <path d="M6 8c31 5 48 24 52 53 4 28 17 51 44 68" stroke="#2B4C7E" stroke-width="2" stroke-linecap="round"/>
+        <path d="M15 17c18 3 29 14 34 31M27 9c5 17 1 29-12 39M49 48c17-3 30 3 39 18M65 75c-1 15 5 27 19 36" stroke="#82A0BC" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="15" cy="17" r="5" fill="#D6E4F0" stroke="#2B4C7E"/>
+        <circle cx="49" cy="48" r="5" fill="#D6E4F0" stroke="#82A0BC"/>
+        <circle cx="65" cy="75" r="4" fill="#D6E4F0" stroke="#2B4C7E"/>
+      </svg>
+
+      <!-- Top Curtain Banner -->
+      <svg class="pointer-events-none absolute left-0 right-0 top-0 h-20 w-full" viewBox="0 0 500 70" preserveAspectRatio="none" fill="none" aria-hidden="true">
+        <path d="M0 0v13c42 32 76 32 112 0 36-32 70-32 106 0 36-32 70-32 112 0 22 17 43 17 64 0V0" fill="#D6E4F0" fill-opacity=".48"/>
+        <path d="M0 10c42 32 76 32 112 0 36-32 70-32 106 0 36-32 70-32 106 0 36-32 70-32 112 0 22 17 43 17 64 0" stroke="#82A0BC" stroke-width="2"/>
+        <path d="M0 18c42 32 76 32 112 0 36-32 70-32 106 0 36-32 70-32 106 0 36-32 70-32 112 0 22 17 43 17 64 0" stroke="#2B4C7E" stroke-opacity=".45"/>
+      </svg>
+
+      <!-- Bottom Curtain Banner -->
+      <svg class="pointer-events-none absolute bottom-0 left-0 right-0 h-20 w-full z-10" viewBox="0 0 500 70" preserveAspectRatio="none" fill="none" aria-hidden="true">
+        <path d="M0 70v-13c42-32 76-32 112 0 36 32 70 32 106 0 36-32 70-32 106 0 36-32 70-32 112 0 22-17 43-17 64 0V70" fill="#D6E4F0" fill-opacity=".48"/>
+        <path d="M0 60c42-32 76-32 112 0 36 32 70 32 106 0 36-32 70-32 112 0 22-17 43-17 64 0" stroke="#82A0BC" stroke-width="2"/>
+        <path d="M0 52c42-32 76-32 112 0 36 32 70 32 106 0 36-32 70-32 112 0 22-17 43-17 64 0" stroke="#2B4C7E" stroke-opacity=".45"/>
+      </svg>
+
+      <!-- Content Details -->
+      <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#6082B6]">Wedding RSVP Confirmation Card</p>
+      <h2 class="mt-2 font-display text-5xl font-bold tracking-wide text-[#2B4C7E]" style="font-family: 'Cormorant Garamond', serif;">Daniel &amp; Hannah</h2>
+
+      <p class="mt-4 text-xs uppercase tracking-widest text-[#6082B6]">This Pass Belongs To</p>
+
+      <p id="pdf-guest-name" class="mt-1 mb-2 font-display text-3xl font-semibold leading-normal text-[#2B4C7E] relative z-20" style="font-family: 'Cormorant Garamond', serif;"></p>
+
+      <!-- REF ID Pill Badge -->
+      <div class="inline-block rounded-full bg-[#D6E4F0]/60 px-4 py-1.5 border border-[#82A0BC]/30 relative z-10">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-[#2B4C7E]">
+          Ref ID: <span id="pdf-guest-id" class="font-mono text-[#6082B6]">---</span>
+        </p>
+      </div>
+
+      <div class="my-6 rounded-2xl bg-[#F8FAFC] p-5 border border-[#82A0BC]/20">
+        <p class="text-base italic leading-relaxed text-[#2B4C7E]/90" style="font-family: 'Cormorant Garamond', cursive, serif;">
+          “Thank you so much for confirming your attendance! Your presence and love mean the world to us as we begin this new chapter together.”
+        </p>
+      </div>
+
+      <!-- Bottom Details -->
+      <div class="grid grid-cols-2 gap-4 text-left border-t border-[#82A0BC]/20 pt-4 relative z-20">
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-wider text-[#6082B6]">Date &amp; Time</p>
+          <p class="text-xs font-semibold text-[#2B4C7E]">Tuesday, Dec 29, 2026</p>
+        </div>
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-wider text-[#6082B6]">Venues</p>
+          <p class="text-xs text-[#2B4C7E]"><strong class="font-bold">Ceremony:</strong> IOWO Novaliches Church</p>
+          <p class="text-xs text-[#2B4C7E]"><strong class="font-bold">Reception:</strong> Artan Garden Eiffel Tower</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messenger Browser Warning & Redirect Modal -->
+  <div id="messenger-redirect-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[10000] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl border border-slate-100">
+      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+        ⚠️
+      </div>
+      <h3 class="font-serif text-lg text-slate-800 font-bold mb-1">Open in External Browser</h3>
+      <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+        You have opened this link in the Messenger App. To properly download your <b>RSVP Pass</b>, please open this link in <b>Safari</b>, <b>Chrome</b> or <b>Any Browser</b>.
+      </p>
+
+      <div class="flex justify-center mb-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+        <div id="qrcode"></div>
+      </div>
+
+      <div class="space-y-2 mb-4">
+        <div class="flex items-center gap-2">
+          <input type="text" id="page-url-input" readonly class="w-full text-xs bg-slate-100 border border-slate-300 rounded-lg px-3 py-2 text-slate-600 outline-none select-all" />
+          <button id="copy-url-btn" type="button" class="bg-slate-800 text-white text-xs px-3 py-2 rounded-lg font-medium hover:bg-slate-700 transition shrink-0">
+            Copy Link
+          </button>
+        </div>
+        <p id="copy-status" class="text-[11px] text-emerald-600 font-semibold h-4"></p>
+      </div>
+
+      <div class="text-left bg-slate-50 p-3 rounded-lg border border-slate-200 mb-4">
+        <p class="text-[11px] font-bold text-slate-700 mb-1">How to open this link outside Messenger?</p>
+        <ol class="text-[11px] text-slate-600 list-decimal pl-4 space-y-0.5">
+          <li>Click <b>Copy Link</b> at the top.</li>
+          <li>Tap the <b>3 dots (...)</b> in the top-right corner of the Messenger screen.</li>
+          <li>Select <b>"Open in browser"</b>.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating FAQ Chatbot Widget -->
+  <div id="faq-widget-container" class="fixed bottom-20 right-5 z-[9999]" style="display: none !important;">
+    <button id="faq-widget-btn" type="button" data-faq-toggle aria-label="Open wedding FAQ assistant" title="Open wedding FAQ assistant" class="faq-launcher w-12 h-12 bg-navy hover:bg-steel text-white rounded-full shadow-xl border border-powder/50 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 relative">
+      <span class="font-cinzel text-xs font-bold tracking-wider text-powder">FAQ</span>
+      <span id="chat-badge" class="w-2.5 h-2.5 bg-green-300 rounded-full animate-ping absolute top-0 right-0"></span>
+    </button>
+
+    <div id="faq-chat-window" class="faq-chat-window hidden absolute bottom-16 right-0 w-[320px] sm:w-[360px] bg-white rounded-2xl border border-powder/40 shadow-2xl overflow-hidden flex flex-col h-[440px] transition-all duration-300" role="dialog" aria-label="Wedding FAQ assistant">
+      <div class="bg-navy p-3.5 flex items-center justify-between shrink-0 border-b border-powder/20">
+        <div class="flex items-center gap-2.5">
+          <div class="relative">
+            <img src="Picture/dannah.png" alt="Dannah AI" class="w-8 h-8 rounded-full border border-powder object-cover shadow-md">
+            <span class="w-2.5 h-2.5 bg-emerald-400 border-2 border-navy rounded-full absolute bottom-0 right-0"></span>
+          </div>
+          <div>
+            <h4 class="text-xs font-cinzel font-bold tracking-wide text-powder">Dannah AI</h4>
+            <p class="text-[10px] text-emerald-400 font-montserrat font-medium flex items-center gap-1">● Online</p>
+          </div>
+        </div>
+        <button type="button" data-faq-toggle class="text-powder/80 hover:text-white text-base leading-none p-1 transition" aria-label="Close wedding FAQ assistant">
+          ✕
+        </button>
+      </div>
+
+      <div id="chat-messages" class="flex-1 p-3.5 overflow-y-auto space-y-3 bg-white text-xs font-montserrat custom-scrollbar">
+        <div class="flex items-start gap-2">
+          <img src="Picture/dannah.png" alt="Dannah AI" class="w-5 h-5 rounded-full object-cover">
+          <div class="bg-ice border border-powder/30 text-navy p-2.5 rounded-2xl rounded-tl-none max-w-[85%] shadow-sm leading-relaxed">
+            Welcome! I'm your Wedding AI Assistant of Daniel & Hannah. What would you like to know? You can choose from the suggested prompts below! 👇
+          </div>
+        </div>
+      </div>
+
+      <div id="chat-typing-indicator" class="hidden px-3.5 py-1.5 bg-white shrink-0">
+        <div class="flex items-center gap-2 text-steel text-xs italic">
+          <img src="Picture/dannah.png" alt="Dannah AI" class="w-5 h-5 rounded-full border border-powder object-cover">
+          <div class="flex items-center gap-1 bg-ice border border-powder/30 px-2.5 py-1.5 rounded-2xl rounded-tl-none shadow-sm">
+            <span class="w-1.5 h-1.5 bg-dusty rounded-full animate-bounce"></span>
+            <span class="w-1.5 h-1.5 bg-dusty rounded-full animate-bounce [animation-delay:0.2s]"></span>
+            <span class="w-1.5 h-1.5 bg-dusty rounded-full animate-bounce [animation-delay:0.4s]"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-2 bg-white/95 border-t border-powder/20 flex items-center gap-1.5 overflow-x-auto shrink-0 custom-scrollbar">
+        <button type="button" data-faq-prompt="Ano ang Dress Code?" class="text-[10px] font-montserrat whitespace-nowrap px-3 py-1.5 bg-ice hover:bg-powder/40 text-navy rounded-full border border-powder/40 transition">👔 Dress Code</button>
+        <button type="button" data-faq-prompt="Saan ang Venue at oras?" class="text-[10px] font-montserrat whitespace-nowrap px-3 py-1.5 bg-ice hover:bg-powder/40 text-navy rounded-full border border-powder/40 transition">📍 Venue & Time</button>
+        <button type="button" data-faq-prompt="May Gift Registry ba?" class="text-[10px] font-montserrat whitespace-nowrap px-3 py-1.5 bg-ice hover:bg-powder/40 text-navy rounded-full border border-powder/40 transition">🎁 Gift Registry</button>
+        <button type="button" data-faq-prompt="Pwede ba Plus One / Kids?" class="text-[10px] font-montserrat whitespace-nowrap px-3 py-1.5 bg-ice hover:bg-powder/40 text-navy rounded-full border border-powder/40 transition">👨‍👩‍👧 Plus One</button>
+        <button type="button" data-faq-prompt="San pwede magparking?" class="text-[10px] font-montserrat whitespace-nowrap px-3 py-1.5 bg-ice hover:bg-powder/40 text-navy rounded-full border border-powder/40 transition">🚘 Parking</button>
+        <button type="button" data-faq-prompt="what is RSVP?" class="text-[10px] font-montserrat whitespace-nowrap px-3 py-1.5 bg-ice hover:bg-powder/40 text-navy rounded-full border border-powder/40 transition">💌 RSVP</button>
+      </div>
+
+      <form id="chat-form" class="p-2.5 bg-white border-t border-powder/30 flex items-center gap-2 shrink-0">
+        <input type="text" id="chat-input" autocomplete="off" placeholder="Mag-type ng tanong..." class="flex-1 bg-ice/60 border border-powder/40 rounded-xl px-3 py-1.5 text-xs text-navy placeholder-dusty/70 outline-none focus:border-dusty focus:bg-white transition" />
+        <button type="submit" class="bg-navy hover:bg-steel text-white font-cinzel font-bold px-3.5 py-1.5 rounded-xl text-xs transition shrink-0 shadow-sm">
+          Send
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
