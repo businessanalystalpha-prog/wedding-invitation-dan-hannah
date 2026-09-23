@@ -238,15 +238,16 @@
           <div><div class="section-rule mb-5"></div><p class="text-xs font-bold uppercase tracking-[.24em] text-steel">Save the date</p><h2 class="mt-2 font-display text-5xl font-semibold">Our Story on Film</h2></div>
           <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">A little preview of the story that brought us here.</p>
           <div class="mt-7 aspect-video overflow-hidden rounded-2xl bg-navy shadow-lg">
-            <!-- YouTube Video Embed -->
-            <iframe 
-              class="h-full w-full border-0" 
-              src="https://www.youtube.com/embed/fXN-m49MHO0?si=nI9eZsBEIByb6XVX" 
-              title="Daniel & Hannah - Save The Date" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen>
-            </iframe>
+            <video 
+              id="save-the-date-video"
+              class="h-full w-full object-cover" 
+              controls 
+              playsinline 
+              preload="metadata"
+              poster="Picture/dannah.png">
+              <source src="I Choose You.mp4" type="video/mp4">
+              Sadyang hindi suportado ng iyong browser ang video playback.
+            </video>
           </div>
         </div>
 
@@ -512,13 +513,16 @@
               </div>
             </div>
 
-            <label class="sm:col-span-2 block">
-              <div class="flex justify-between items-center mb-1">
-                <span class="field-label !mb-0">A declaration for Daniel &amp; Hannah</span>
-                <span id="wishes-counter" class="text-[10px] font-bold text-steel">0 / 250</span>
+            <!-- BAGONG CODE (Naka-position sa Kanang Ibaba ang Counter) -->
+            <div class="sm:col-span-2 relative">
+              <label for="wishes-input" class="field-label block mb-1">
+                A declaration for Daniel &amp; Hannah
+              </label>
+              <div class="relative">
+                <textarea id="wishes-input" name="wishes" rows="4" maxlength="250" class="field resize-none pb-7" placeholder="Leave a little love for the couple..."></textarea>
+                <span id="wishes-counter" class="absolute bottom-2.5 right-3 text-[10px] font-bold text-steel bg-white/80 px-1.5 py-0.5 rounded backdrop-blur-sm pointer-events-none">0 / 250</span>
               </div>
-              <textarea id="wishes-input" name="wishes" rows="4" maxlength="250" class="field resize-none" placeholder="Leave a little love for the couple..."></textarea>
-            </label>
+            </div>
           </div>
           <button id="rsvp-submit" type="submit" class="relative z-20 mt-6 w-full rounded-full bg-navy px-6 py-4 text-xs font-bold uppercase tracking-[.2em] text-white transition hover:bg-steel disabled:cursor-wait disabled:opacity-60">Send my RSVP</button>
           <p id="form-status" class="relative z-20 mt-4 text-center text-sm" role="status"></p>
