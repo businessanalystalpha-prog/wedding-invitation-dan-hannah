@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --navy: #2B4C7E;
   --dusty: #82A0BC;
   --powder: #D6E4F0;
@@ -467,4 +467,47 @@ body { background: var(--ice); color: var(--navy); }
 .rsvp-container > * {
   position: relative;
   z-index: 10;
+}
+
+/* ==========================================
+   CHARACTER COUNTER POSITIONING (0 / 250)
+   ========================================== */
+
+/* 1. Ginagawang relative container ang wrapper ng textarea at label */
+.declaration-field-group,
+.rsvp-container .field-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 2. Inaayos ang label at counter container para mag-stack sa flex layout */
+.declaration-field-group .field-label-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* 3. Inililipat ang character counter sa kanang ibaba sa loob ng textarea box */
+.char-counter,
+#char-count-wrapper,
+.declaration-field-group span:has(canvas), 
+.declaration-field-group .counter-text {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  color: #82A0BC;
+  pointer-events: none;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.25rem;
+}
+
+/* 4. Nilalagyan ng space sa ibaba ng textarea para hindi matakpan ng counter ang pino-post na text */
+.declaration-field-group textarea,
+.rsvp-container textarea {
+  padding-bottom: 2rem !important;
 }
